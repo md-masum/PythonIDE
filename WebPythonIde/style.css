@@ -1,0 +1,17 @@
+@media (max-width: 768px) {
+    .col-md-6 {
+        flex: 0 0 100%;
+        max-width: 100%;
+    }
+}
+
+#editor {
+    height: 400px;
+    border: 1px solid #ccc;
+}
+
+#output {
+    height: 400px;
+    border: 1px solid #ccc;
+    background-color: #f8f9fa;
+}
