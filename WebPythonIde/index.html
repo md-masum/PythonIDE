@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="codemirror/codemirror.css">
     <link rel="stylesheet" href="codemirror/theme.css">
     <link rel="stylesheet" href="style.css"> <!-- Using the main style.css now -->
-    <script src="pyodide/pyodide.js"></script>
+    
 </head>
 <body>
     <div class="d-flex flex-column vh-100">
@@ -52,6 +52,7 @@
                             <h5 id="editor-filename" class="mb-0"></h5>
                             <div>
                                 <button id="run-btn" class="btn btn-primary">Run</button>
+                                <button id="terminate-btn" class="btn btn-warning" style="display: none;">Terminate</button>
                                 <button id="clear-btn" class="btn btn-secondary">Clear Output</button>
                             </div>
                         </div>

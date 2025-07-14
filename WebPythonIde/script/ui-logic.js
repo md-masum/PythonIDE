@@ -2,9 +2,11 @@ document.addEventListener('DOMContentLoaded', () => {
     const output = document.getElementById('output');
     const runBtn = document.getElementById('run-btn');
     const clearBtn = document.getElementById('clear-btn');
+    const terminateBtn = document.getElementById('terminate-btn');
     const fileList = document.getElementById('file-list');
     const newFileBtn = document.getElementById('new-file-btn');
     const editorFilename = document.getElementById('editor-filename');
+    const loader = document.getElementById('loader');
 
     // --- CodeMirror Editor Initialization ---
     const editor = CodeMirror(document.getElementById('editor'), {
@@ -16,6 +18,66 @@ document.addEventListener('DOMContentLoaded', () => {
 
     let files = [];
     let activeFileId = null;
+    let pyodideWorker = null;
+
+    // --- Web Worker Management ---
+    const initializeWorker = () => {
+        if (pyodideWorker) {
+            pyodideWorker.terminate(); // Terminate existing worker if any
+        }
+        pyodideWorker = new Worker('./pyodide-worker.js');
+
+        pyodideWorker.onmessage = (event) => {
+            const { status, output: workerOutput, isError, error } = event.data;
+
+            switch (status) {
+                case 'loading':
+                    loader.style.display = 'block';
+                    runBtn.disabled = true;
+                    terminateBtn.style.display = 'none';
+                    output.textContent = 'Loading Pyodide...';
+                    break;
+                case 'ready':
+                    loader.style.display = 'none';
+                    runBtn.disabled = false;
+                    output.textContent = 'Pyodide loaded. Ready to run Python code.';
+                    break;
+                case 'running':
+                    runBtn.disabled = true;
+                    terminateBtn.style.display = 'inline-block';
+                    output.textContent = 'Running...';
+                    break;
+                case 'complete':
+                    runBtn.disabled = false;
+                    terminateBtn.style.display = 'none';
+                    output.textContent = workerOutput;
+                    if (isError) {
+                        output.style.color = 'red';
+                    } else {
+                        output.style.color = ''; // Reset color
+                    }
+                    break;
+                case 'error':
+                    loader.style.display = 'none';
+                    runBtn.disabled = false;
+                    terminateBtn.style.display = 'none';
+                    output.textContent = `Error: ${error}`;
+                    output.style.color = 'red';
+                    break;
+            }
+        };
+
+        pyodideWorker.onerror = (error) => {
+            console.error('Worker error:', error);
+            loader.style.display = 'none';
+            runBtn.disabled = false;
+            terminateBtn.style.display = 'none';
+            output.textContent = `Worker Error: ${error.message || error || 'Unknown worker error'}`;
+            output.style.color = 'red';
+        };
+
+        pyodideWorker.postMessage({ type: 'init' });
+    };
 
     // --- File System Functions ---
     const saveFiles = () => localStorage.setItem('python_ide_files', JSON.stringify(files));
@@ -113,27 +175,6 @@ document.addEventListener('DOMContentLoaded', () => {
             fileNameSpan.textContent = file.name;
             li.addEventListener('click', () => setActiveFile(file.id));
 
-            // const actionsDiv = document.createElement('div');
-            // actionsDiv.className = 'file-actions';
-
-            // const downloadBtn = document.createElement('button');
-            // downloadBtn.className = 'btn btn-sm btn-outline-light me-2';
-            // downloadBtn.innerHTML = '&#x21E9;'; // Download arrow
-            // downloadBtn.title = 'Download';
-            // downloadBtn.addEventListener('click', (e) => {
-            //     e.stopPropagation();
-            //     downloadFile(file.id);
-            // });
-
-            // const deleteBtn = document.createElement('button');
-            // deleteBtn.className = 'btn btn-sm btn-outline-danger';
-            // deleteBtn.innerHTML = '&times;'; // Delete X
-            // deleteBtn.title = 'Delete';
-            // deleteBtn.addEventListener('click', (e) => {
-            //     e.stopPropagation();
-            //     deleteFile(file.id);
-            // });
-
             const dropdownDiv = document.createElement('div');
             dropdownDiv.className = 'dropdown ms-auto';
 
@@ -172,13 +213,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             li.appendChild(fileNameSpan);
             li.appendChild(dropdownDiv);
-
-
-            // actionsDiv.appendChild(downloadBtn);
-            // actionsDiv.appendChild(deleteBtn);
-            
-            // li.appendChild(fileNameSpan);
-            // li.appendChild(actionsDiv);
             fileList.appendChild(li);
         });
     };
@@ -221,7 +255,16 @@ document.addEventListener('DOMContentLoaded', () => {
             saveFiles();
         }
         
-        window.runCode(fileToRun.content);
+        pyodideWorker.postMessage({ type: 'run', code: fileToRun.content });
+    });
+
+    terminateBtn.addEventListener('click', () => {
+        if (pyodideWorker) {
+            pyodideWorker.terminate();
+            initializeWorker(); // Re-initialize worker after termination
+            output.textContent = 'Execution terminated.';
+            output.style.color = 'orange';
+        }
     });
 
     clearBtn.addEventListener('click', () => output.textContent = '');
@@ -229,5 +272,5 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initial Load ---
     loadFiles();
-    window.initPyodide();
+    initializeWorker(); // Initialize the worker on page load
 });
