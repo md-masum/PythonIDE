@@ -1,47 +1,85 @@
+
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-bs-theme="dark">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Python IDE</title>
+    <title>Offline Python IDE - New UI</title>
     <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
     <link rel="stylesheet" href="codemirror/codemirror.css">
     <link rel="stylesheet" href="codemirror/theme.css">
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css"> <!-- Using the main style.css now -->
+    <script src="pyodide/pyodide.js"></script>
 </head>
 <body>
-    <div class="container-fluid">
-        <div class="row">
-            <nav class="col-md-3 d-none d-md-block bg-light sidebar">
-                <div class="sidebar-sticky">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <button class="btn btn-primary btn-block" id="create-file">Create File</button>
-                        </li>
-                    </ul>
-                    <ul class="nav flex-column" id="file-list">
-                    </ul>
+    <div class="d-flex flex-column vh-100">
+        <!-- Navbar -->
+        <nav class="navbar navbar-expand-lg bg-body-tertiary flex-shrink-0">
+            <div class="container-fluid">
+                <button class="btn btn-dark d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasPanel" aria-controls="offcanvasPanel" aria-label="Toggle navigation">
+                    &#9776; Files
+                </button>
+                <a class="navbar-brand mx-auto" href="#">Offline Python IDE</a>
+            </div>
+        </nav>
+
+        <!-- Main Content Area (Sidebar + Editor/Output) -->
+        <div class="d-flex flex-grow-1 overflow-hidden">
+
+            <!-- Left Sidebar (Offcanvas for mobile, static for desktop) -->
+            <div class="offcanvas d-lg-block offcanvas-start text-bg-dark d-flex flex-column flex-shrink-0 p-3 overflow-y-auto" tabindex="-1" id="offcanvasPanel" aria-labelledby="offcanvasPanelLabel">
+    
+                <div class="offcanvas-header d-lg-none"> <!-- Hide close button on desktop -->
+                    <h5 class="offcanvas-title" id="offcanvasPanelLabel">Files</h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
                 </div>
-            </nav>
-            <main role="main" class="col-md-9 ml-sm-auto col-lg-9 px-4">
-                <div class="row">
-                    <div class="col-md-6">
-                        <textarea id="editor"></textarea>
-                        <button class="btn btn-success" id="run-button">Run</button>
-                        <button class="btn btn-danger" id="clear-button">Clear Output</button>
+                <div class="d-flex justify-content-between align-items-center mb-3"> <!-- Show header on desktop -->
+                    <h5 class="mb-0">Files</h5>
+                    <button class="btn btn-success btn-sm" id="new-file-btn" title="New File">Add New</button>
+                </div>
+                <div class="offcanvas-body p-0 d-lg-block"> <!-- Show body on desktop -->
+                    <ul class="list-group" id="file-list"></ul>
+                </div>
+
+            </div>
+
+            <!-- Editor and Output Section -->
+            <main class="flex-grow-1 d-flex flex-column p-2">
+                <div class="row flex-grow-1 g-2">
+                    <!-- Editor Column -->
+                    <div class="col-md-6 d-flex flex-column editor-col">
+                        <div class="d-flex justify-content-between align-items-center pb-2">
+                            <h5 id="editor-filename" class="mb-0"></h5>
+                            <div>
+                                <button id="run-btn" class="btn btn-primary">Run</button>
+                                <button id="clear-btn" class="btn btn-secondary">Clear Output</button>
+                            </div>
+                        </div>
+                        <div id="editor" class="flex-grow-1"></div>
                     </div>
-                    <div class="col-md-6">
-                        <pre id="output"></pre>
+
+                    <!-- Output Column -->
+                    <div class="col-md-6 d-flex flex-column output-col">
+                        <h5 class="pb-2 mb-0">Output</h5>
+                        <pre id="output" class="flex-grow-1 bg-dark p-2 rounded"></pre>
                     </div>
                 </div>
             </main>
         </div>
     </div>
 
+    <!-- Loader -->
+    <div id="loader" class="position-fixed top-50 start-50 translate-middle p-3 bg-dark border rounded shadow-lg" style="display: none; z-index: 1060;">
+        <div class="d-flex align-items-center">
+            <strong>Loading Pyodide...</strong>
+            <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+        </div>
+    </div>
+
     <script src="bootstrap/bootstrap.bundle.min.js"></script>
     <script src="codemirror/codemirror.js"></script>
     <script src="codemirror/python.js"></script>
-    <script src="script/ui.js"></script>
-    <script src="script/run.js"></script>
+    <script src="script/pyodide-logic.js" defer></script>
+    <script src="script/ui-logic.js" defer></script>
 </body>
 </html>
