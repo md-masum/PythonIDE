@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (pyodideWorker) {
             pyodideWorker.terminate(); // Terminate existing worker if any
         }
-        pyodideWorker = new Worker('./pyodide-worker.js');
+        pyodideWorker = new Worker('script/pyodide-worker.js');
 
         pyodideWorker.onmessage = (event) => {
             const { status, output: workerOutput, isError, error } = event.data;
@@ -66,15 +66,30 @@ document.addEventListener('DOMContentLoaded', () => {
                     break;
             }
         };
+        pyodideWorker.onerror = (errorEvent) => {
+    console.error('Worker error:', errorEvent);
+    loader.style.display = 'none';
+    runBtn.disabled = false;
+    terminateBtn.style.display = 'none';
+    output.textContent = `Worker Error: ${errorEvent.message || errorEvent.error || 'Unknown worker error'}`;
+    output.textContent += `
+File: ${errorEvent.filename}, Line: ${errorEvent.lineno}, Column: ${errorEvent.colno}`;
+    output.style.color = 'red';
+};
 
-        pyodideWorker.onerror = (error) => {
-            console.error('Worker error:', error);
-            loader.style.display = 'none';
-            runBtn.disabled = false;
-            terminateBtn.style.display = 'none';
-            output.textContent = `Worker Error: ${error.message || error || 'Unknown worker error'}`;
-            output.style.color = 'red';
-        };
+//         pyodideWorker.onerror = (error) => {
+//             console.error('Worker error:', error);
+//             loader.style.display = 'none';
+//             runBtn.disabled = false;
+//             terminateBtn.style.display = 'none';
+//             output.textContent = `Worker Error: ${error.message || error.error || 'Unknown worker error'}`;
+//             if (error.filename) {
+//                 output.textContent += `
+// File: ${error.filename}, Line: ${error.lineno}, Column: ${error.colno}`;
+//             }
+//             console.error('Full worker error object:', error);
+//             output.style.color = 'red';
+//         };
 
         pyodideWorker.postMessage({ type: 'init' });
     };
