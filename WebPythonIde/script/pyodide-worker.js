@@ -6,12 +6,12 @@ async function loadPyodideAndPackages() {
     self.postMessage({ status: 'loading' });
     try {
         pyodide = await loadPyodide({ indexURL: '../pyodide/' });
-        pyodide.runPython(`
-            import sys, io, js
-            def custom_input(prompt=''):
-                return js.window.prompt(prompt) or ''
-            __builtins__.input = custom_input
-        `);
+
+        // Define the JavaScript function that Python will call for real-time output
+        pyodide.globals.set("console_output", (text) => {
+            self.postMessage({ type: 'realtime_output', content: text });
+        });
+
         self.postMessage({ status: 'ready' });
     } catch (error) {
         self.postMessage({ status: 'error', error: error.message });
@@ -32,37 +32,27 @@ self.onmessage = async (event) => {
         self.postMessage({ status: 'running' });
 
         try {
-            pyodide.globals.set("user_code", code);
-            const python_code = `
-import sys, io, traceback
-stdout_orig = sys.stdout
-stderr_orig = sys.stderr
-stdout_new = io.StringIO()
-stderr_new = io.StringIO()
-sys.stdout = stdout_new
-sys.stderr = stderr_new
-output = None
-try:
-    exec(user_code, globals())
-except Exception:
-    sys.stderr.write(traceback.format_exc())
-finally:
-    sys.stdout = stdout_orig
-    sys.stderr = stderr_orig
-    stdout_val = stdout_new.getvalue()
-    stderr_val = stderr_new.getvalue()
-    output = stdout_val + "<!!stderr!!>" + stderr_val
-output
-            `;
-            await pyodide.loadPackagesFromImports(code);
-            let full_output = await pyodide.runPythonAsync(python_code);
-            const [stdout, stderr] = full_output.split("<!!stderr!!>");
+            // Redirect Python stdout/stderr to a custom JS function
+            pyodide.runPython(`
+import sys
 
-            if (stderr.trim()) {
-                self.postMessage({ status: 'complete', output: stderr.trim(), isError: true });
-            } else {
-                self.postMessage({ status: 'complete', output: stdout.trim(), isError: false });
-            }
+class Console:
+    def write(self, text):
+        # Call the JavaScript function defined in the worker's global scope
+        console_output(text)
+    def flush(self):
+        pass
+
+sys.stdout = Console()
+sys.stderr = Console()
+
+# User code will be executed here
+`);
+
+            await pyodide.loadPackagesFromImports(code);
+            await pyodide.runPythonAsync(code);
+
+            self.postMessage({ status: 'complete', output: 'Execution finished.', isError: false });
         } catch (err) {
             self.postMessage({ status: 'error', error: `Python Error: ${err.message}` });
         }

@@ -14,9 +14,20 @@ export function initializeWorkerPyodide() {
     workerPyodideInstance = new Worker('script/pyodide-worker.js');
 
     workerPyodideInstance.onmessage = (event) => {
-        const { status, output: workerOutput, isError, error } = event.data;
+            const { type, status, output: workerOutput, isError, error, content } = event.data;
 
-        switch (status) {
+            if (type === 'realtime_output') {
+                if(output.textContent == 'Running...'){
+                    output.textContent = content;
+                    return;
+                }else{
+                    output.textContent += content;
+                    return;
+                }
+                
+            }
+
+            switch (status) {
             case 'loading':
                 loader.style.display = 'block';
                 runBtn.disabled = true;
@@ -36,12 +47,7 @@ export function initializeWorkerPyodide() {
             case 'complete':
                 runBtn.disabled = false;
                 terminateBtn.style.display = 'none';
-                output.textContent = workerOutput;
-                if (isError) {
-                    output.style.color = 'red';
-                } else {
-                    output.style.color = ''; // Reset color
-                }
+                // Output is handled by 'realtime_output' type messages
                 break;
             case 'error':
                 loader.style.display = 'none';
