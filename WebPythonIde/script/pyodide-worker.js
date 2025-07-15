@@ -1,26 +1,12 @@
 importScripts('../pyodide/pyodide.js');
 
 let pyodide;
-let inputPromiseResolve;
 
 async function loadPyodideAndPackages() {
     self.postMessage({ status: 'loading' });
     try {
         pyodide = await loadPyodide({ indexURL: '../pyodide/' });
-
-        // Expose JS await_input to Python
-        self.await_input = (promptStr) => {
-            return new Promise((resolve) => {
-                inputPromiseResolve = resolve;
-                self.postMessage({ type: 'input_request', prompt: promptStr });
-            });
-        };
-        pyodide.runPython(`
-import js
-def input(prompt=''):
-    return js.await_input(prompt)
-        `);
-
+        
         self.postMessage({ status: 'ready' });
     } catch (error) {
         self.postMessage({ status: 'error', error: error.message });
@@ -28,7 +14,7 @@ def input(prompt=''):
 }
 
 self.onmessage = async (event) => {
-    const { type, code, input } = event.data;
+    const { type, code } = event.data;
 
     if (type === 'init') {
         await loadPyodideAndPackages();
@@ -39,6 +25,7 @@ self.onmessage = async (event) => {
         }
 
         self.postMessage({ status: 'running' });
+
         try {
             pyodide.globals.set("user_code", code);
             const python_code = `
@@ -65,6 +52,7 @@ output
             await pyodide.loadPackagesFromImports(code);
             let full_output = await pyodide.runPythonAsync(python_code);
             const [stdout, stderr] = full_output.split("<!!stderr!!>");
+
             if (stderr.trim()) {
                 self.postMessage({ status: 'complete', output: stderr.trim(), isError: true });
             } else {
@@ -72,11 +60,6 @@ output
             }
         } catch (err) {
             self.postMessage({ status: 'error', error: `Python Error: ${err.message}` });
-        }
-    } else if (type === 'input_response') {
-        if (inputPromiseResolve) {
-            inputPromiseResolve(input);
-            inputPromiseResolve = null;
         }
     }
 };
