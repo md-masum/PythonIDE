@@ -6,7 +6,12 @@ async function loadPyodideAndPackages() {
     self.postMessage({ status: 'loading' });
     try {
         pyodide = await loadPyodide({ indexURL: '../pyodide/' });
-        
+        pyodide.runPython(`
+            import sys, io, js
+            def custom_input(prompt=''):
+                return js.window.prompt(prompt) or ''
+            __builtins__.input = custom_input
+        `);
         self.postMessage({ status: 'ready' });
     } catch (error) {
         self.postMessage({ status: 'error', error: error.message });

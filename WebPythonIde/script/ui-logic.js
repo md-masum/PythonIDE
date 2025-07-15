@@ -1,6 +1,6 @@
-import { initializePyodideWorker, runPythonCode, terminatePythonExecution } from './pyodide-logic.js';
+import { initializeWorkerPyodide, initializeMainThreadPyodide, runPythonCode, terminatePythonExecution } from './pyodide-logic.js';
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
     const output = document.getElementById('output');
     const runBtn = document.getElementById('run-btn');
     const clearBtn = document.getElementById('clear-btn');
@@ -196,11 +196,15 @@ document.addEventListener('DOMContentLoaded', () => {
             saveFiles();
         }
         
-        runPythonCode(fileToRun.content); // Call the function from pyodide-logic.js
+        // Check if code contains 'input('
+        const usesInput = /input\s*\(/g.test(code);
+        runPythonCode(fileToRun.content, usesInput); // Pass usesInput flag
     });
 
     terminateBtn.addEventListener('click', () => {
-        terminatePythonExecution(); // Call the function from pyodide-logic.js
+        // Check if main thread Pyodide is active (no easy way to know from here)
+        // For now, assume if terminateBtn is visible, it's worker Pyodide
+        terminatePythonExecution(false); // Always try to terminate worker
     });
 
     clearBtn.addEventListener('click', () => output.textContent = '');
@@ -208,5 +212,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Initial Load ---
     loadFiles();
-    initializePyodideWorker(); // Initialize the worker on page load
+    // Initialize both worker and main thread Pyodide instances
+    await initializeWorkerPyodide();
+    await initializeMainThreadPyodide();
 });
