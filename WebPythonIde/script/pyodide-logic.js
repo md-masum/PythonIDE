@@ -3,11 +3,7 @@ const output = document.getElementById('output');
 const runBtn = document.getElementById('run-btn');
 const terminateBtn = document.getElementById('terminate-btn');
 
-import * as mainThreadModule from './pyodide-mainThread.js';
-
-export const initializeMainThreadPyodide = mainThreadModule.initializeMainThreadPyodide;
-export const runPythonCodeMainThread = mainThreadModule.runPythonCodeMainThread;
-export const terminateMainThreadExecution = mainThreadModule.terminateMainThreadExecution;
+import { runPythonCodeMainThread, terminateMainThreadExecution } from './pyodide-mainThread.js';
 
 let workerPyodideInstance = null;
 

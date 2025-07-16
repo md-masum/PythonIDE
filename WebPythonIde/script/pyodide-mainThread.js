@@ -63,7 +63,7 @@ export async function runPythonCodeMainThread(code) {
     try {
         mainThreadPyodideInstance.globals.set("user_code", code);
         const python_code = `
-import sys, io, traceback
+import sys, io, traceback, json
 stdout_orig = sys.stdout
 stderr_orig = sys.stderr
 stdout_new = io.StringIO()
@@ -80,18 +80,18 @@ finally:
     sys.stderr = stderr_orig
     stdout_val = stdout_new.getvalue()
     stderr_val = stderr_new.getvalue()
-    output = stdout_val + "<!!stderr!!>" + stderr_val
+    output = json.dumps({"stdout": stdout_val, "stderr": stderr_val})
 output
         `;
         await mainThreadPyodideInstance.loadPackagesFromImports(code);
-        let full_output = await mainThreadPyodideInstance.runPythonAsync(python_code);
-        const [stdout, stderr] = full_output.split("<!!stderr!!>");
+        let result = await mainThreadPyodideInstance.runPythonAsync(python_code);
+        let { stdout, stderr } = JSON.parse(result);
 
-        if (stderr.trim()) {
-            output.textContent += stderr.trim();
+        if (stderr) {
+            output.textContent += stderr;
             output.style.color = 'red';
         } else {
-            output.textContent += stdout.trim();
+            output.textContent += stdout;
             output.style.color = '';
         }
         output.textContent += '\nExecution finished.';

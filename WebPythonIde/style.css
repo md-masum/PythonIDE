@@ -1,4 +1,3 @@
-
 /* Ensure full height for main layout components */
 html, body {
     height: 100%;
@@ -6,7 +5,6 @@ html, body {
 }
 
 /* Styles for the offcanvas panel on desktop */
-
 @media (min-width: 992px) {
   #offcanvasPanel {
     position: relative !important;
@@ -14,7 +12,6 @@ html, body {
     visibility: visible !important;
     border-right: 1px solid #444;
     width: 280px;
-    /* height: 100vh; */
   }
 
   .offcanvas-backdrop {
@@ -25,7 +22,6 @@ html, body {
     }
     .offcanvas-body {
         padding: 0; 
-        height: 100vh;
     }
 }
 
@@ -34,7 +30,7 @@ html, body {
     height: 100%;
     border: 1px solid #495057;
     border-radius: 0.25rem;
-    overflow: hidden;
+    overflow: auto;
 }
 
 /* CodeMirror specific height fix */
@@ -45,58 +41,26 @@ html, body {
 /* List item styling for file list */
 .list-group-item {
     cursor: pointer;
+    background-color: transparent;
+    border: none;
+    color: #ddd;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.95rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: background 0.2s ease;
 }
 
-.list-group-item .file-actions {
-    display: none;
-}
-
-.list-group-item:hover .file-actions,
-.list-group-item.active .file-actions {
-    display: inline;
-}
-
-/* Mobile-specific styles (stacked layout) */
-@media (max-width: 767.98px) {
-    .editor-col, .output-col {
-        height: 50vh; /* Each takes 50% of viewport height */
-    }
-    main .row {
-        flex-direction: column; /* Stack columns vertically */
-    }
-}
-
-
-/* Sidebar Menu Styling */
-#file-list {
-  list-style: none;
-  padding-left: 0;
-  margin: 0;
-}
-
-#file-list .list-group-item {
-  background-color: transparent;
-  border: none;
-  color: #ddd;
-  padding: 0.5rem 0.75rem;
-  font-size: 0.95rem;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  transition: background 0.2s ease;
-}
-
-#file-list .list-group-item:hover {
+.list-group-item:hover {
   background-color: rgba(255, 255, 255, 0.05);
-  cursor: pointer;
 }
 
-#file-list .list-group-item.active {
+.list-group-item.active {
   background-color: #007acc;
   color: #fff;
   font-weight: bold;
   border-radius: 4px;
-  z-index: 0;
 }
 
 .file-actions {
@@ -115,14 +79,16 @@ html, body {
   opacity: 1;
 }
 
-/* Optional: make dropdown background match theme */
-
-/* Align dropdown right */
-.dropdown-menu {
-    font-size: 0.85rem;
-    min-width: 130px;
+.dropdown-toggle::after {
+    display: none;
 }
 
-.dropdown-menu.show {
-    z-index: 3;
+/* Mobile-specific styles (stacked layout) */
+@media (max-width: 767.98px) {
+    .editor-col, .output-col {
+        height: 50vh; /* Each takes 50% of viewport height */
+    }
+    main .row {
+        flex-direction: column; /* Stack columns vertically */
+    }
 }
