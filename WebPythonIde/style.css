@@ -28,9 +28,10 @@ html, body {
 /* Ensure editor and output take full height of their columns */
 #editor, #output {
     height: 100%;
-    border: 1px solid #495057;
+    border: 1px solid var(--bs-border-color);
     border-radius: 0.25rem;
     overflow: auto;
+    background-color: var(--bs-body-bg);
 }
 
 /* CodeMirror specific height fix */
@@ -43,7 +44,7 @@ html, body {
     cursor: pointer;
     background-color: transparent;
     border: none;
-    color: #ddd;
+    color: var(--bs-body-color);
     padding: 0.5rem 0.75rem;
     font-size: 0.95rem;
     display: flex;

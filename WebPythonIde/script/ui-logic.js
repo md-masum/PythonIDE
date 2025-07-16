@@ -10,6 +10,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const newFileBtn = document.getElementById('new-file-btn');
     const editorFilename = document.getElementById('editor-filename');
 
+    const formatBtn = document.getElementById('format-btn');
+
+    const themeSwitcher = document.getElementById('theme-switcher');
+
     // --- CodeMirror Editor Initialization ---
     const editor = CodeMirror(document.getElementById('editor'), {
         mode: 'python',
@@ -85,6 +89,36 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
+    const renameFile = (fileId) => {
+        const file = files.find(f => f.id === fileId);
+        if (file) {
+            const newName = prompt("Enter new filename:", file.name);
+            if (newName && newName !== file.name) {
+                file.name = newName;
+                saveFiles();
+                renderFileList();
+                if (file.id === activeFileId) {
+                    editorFilename.textContent = newName;
+                }
+            }
+        }
+    };
+
+    runBtn.addEventListener('click', () => {
+        const code = editor.getValue();
+        if (!code.trim()) {
+            return; // Don't run empty code
+        }
+
+        const activeFile = files.find(f => f.id === activeFileId);
+        if (activeFile) {
+            activeFile.content = code;
+            saveFiles();
+            const usesInput = /input\s*\(/.test(code);
+            runPythonCode(activeFile.content, usesInput);
+        } 
+    });
+
     const setActiveFile = (fileId) => {
         saveActiveFileContent(); // Save previous file before switching
         activeFileId = fileId;
@@ -106,33 +140,74 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const renderFileList = () => {
+        console.log('Rendering file list:', files);
         fileList.innerHTML = '';
         files.forEach(file => {
             const li = document.createElement('li');
-            li.className = `list-group-item list-group-item-action d-flex justify-content-between align-items-center ${file.id === activeFileId ? 'active' : ''}`;
+            li.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
             li.dataset.id = file.id;
-            li.innerHTML = `
-                <span class="file-name">${file.name}</span>
-                <div class="dropdown ms-auto">
-                    <button class="btn btn-sm btn-secondary" data-bs-toggle="dropdown" aria-expanded="false">&#x22EE;</button>
-                    <ul class="dropdown-menu dropdown-menu-end">
-                        <li><a class="dropdown-item download-file" href="#">Download</a></li>
-                        <li><a class="dropdown-item text-danger delete-file" href="#">Delete</a></li>
-                    </ul>
-                </div>
-            `;
+            if (file.id === activeFileId) {
+                li.classList.add('active');
+            }
 
+            const fileNameSpan = document.createElement('span');
+            fileNameSpan.className = 'file-name';
+            fileNameSpan.textContent = file.name;
             li.addEventListener('click', () => setActiveFile(file.id));
-            li.querySelector('.download-file').addEventListener('click', (e) => {
+
+            const dropdownDiv = document.createElement('div');
+            dropdownDiv.className = 'dropdown ms-auto';
+
+            const toggleBtn = document.createElement('button');
+            toggleBtn.className = 'btn btn-sm btn-secondary';
+            toggleBtn.setAttribute('data-bs-toggle', 'dropdown');
+            toggleBtn.setAttribute('aria-expanded', 'false');
+            toggleBtn.innerHTML = '&#x22EE;'; // ⋮ 3-dot only
+
+            // Prevent parent <li> click event from firing when dropdown toggle is clicked
+            toggleBtn.addEventListener('click', (e) => {
+                e.stopPropagation();
+            });
+
+            const dropdownMenu = document.createElement('ul');
+            dropdownMenu.className = 'dropdown-menu dropdown-menu-end';
+
+            const downloadItem = document.createElement('li');
+            downloadItem.innerHTML = `<a class="dropdown-item" href="#">Download</a>`;
+            downloadItem.querySelector('a').addEventListener('click', (e) => {
                 e.stopPropagation();
                 downloadFile(file.id);
             });
-            li.querySelector('.delete-file').addEventListener('click', (e) => {
+
+            const renameItem = document.createElement('li');
+            renameItem.innerHTML = `<a class="dropdown-item" href="#">Rename</a>`;
+            renameItem.querySelector('a').addEventListener('click', (e) => {
+                e.stopPropagation();
+                renameFile(file.id);
+            });
+
+            const deleteItem = document.createElement('li');
+            deleteItem.innerHTML = `<a class="dropdown-item text-danger" href="#">Delete</a>`;
+            deleteItem.querySelector('a').addEventListener('click', (e) => {
                 e.stopPropagation();
                 deleteFile(file.id);
             });
 
+            dropdownMenu.appendChild(downloadItem);
+            dropdownMenu.appendChild(renameItem);
+            dropdownMenu.appendChild(deleteItem);
+            dropdownDiv.appendChild(toggleBtn);
+            dropdownDiv.appendChild(dropdownMenu);
+
+            li.appendChild(fileNameSpan);
+            li.appendChild(dropdownDiv);
             fileList.appendChild(li);
+        });
+
+        // Initialize dropdowns
+        const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+        dropdownElementList.map(function (dropdownToggleEl) {
+            return new bootstrap.Dropdown(dropdownToggleEl);
         });
     };
 
@@ -144,22 +219,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         }
     };
 
-    // --- Event Listeners ---
-    runBtn.addEventListener('click', () => {
-        const code = editor.getValue();
-        if (!code.trim()) {
-            return; // Don't run empty code
-        }
-
-        const activeFile = files.find(f => f.id === activeFileId);
-        if (activeFile) {
-            activeFile.content = code;
-            saveFiles();
-            const usesInput = /input\s*\(/.test(code);
-            runPythonCode(activeFile.content, usesInput);
-        } 
-    });
-
     terminateBtn.addEventListener('click', () => {
         const code = editor.getValue();
         const usesInput = /input\s*\(/.test(code);
@@ -168,6 +227,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     clearBtn.addEventListener('click', () => output.textContent = '');
     newFileBtn.addEventListener('click', () => createNewFile());
+
+    themeSwitcher.addEventListener('change', () => {
+        if (themeSwitcher.checked) {
+            document.documentElement.setAttribute('data-bs-theme', 'dark');
+            editor.setOption('theme', 'material-darker');
+        } else {
+            document.documentElement.setAttribute('data-bs-theme', 'light');
+            editor.setOption('theme', 'default');
+        }
+    });
 
     // --- Initial Load ---
     loadFiles();
