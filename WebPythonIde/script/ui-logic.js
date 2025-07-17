@@ -2,11 +2,11 @@ console.log('ui-logic.js: Script loaded');
 
 import { initializeWorkerPyodide, runPythonCode, terminatePythonExecution } from './pyodide-logic.js';
 import { initializeMainThreadPyodide } from './pyodide-mainThread.js';
+import { initializeTerminal, clearTerminal, setTerminalTheme } from './terminal.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('ui-logic.js: DOMContentLoaded event fired');
 
-    const output = document.getElementById('output');
     const runBtn = document.getElementById('run-btn');
     const clearBtn = document.getElementById('clear-btn');
     const terminateBtn = document.getElementById('terminate-btn');
@@ -139,7 +139,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         console.log('ui-logic.js: setActiveFile function triggered for file:', fileId);
         saveActiveFileContent(); // Save previous file before switching
         activeFileId = fileId;
-        output.textContent = ''; // Clear output on file change
+        clearTerminal(); // Clear terminal on file change
         renderFileList();
         loadActiveFile();
     };
@@ -180,7 +180,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             toggleBtn.className = 'btn btn-sm btn-secondary';
             toggleBtn.setAttribute('data-bs-toggle', 'dropdown');
             toggleBtn.setAttribute('aria-expanded', 'false');
-            toggleBtn.innerHTML = '&#x22EE;'; // ⋮ 3-dot only
+            toggleBtn.innerHTML = '&#x22EE;'; // 
 
             // Prevent parent <li> click event from firing when dropdown toggle is clicked
             toggleBtn.addEventListener('click', (e) => {
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     clearBtn.addEventListener('click', () => {
         console.log('ui-logic.js: Clear button clicked');
-        output.textContent = '';
+        clearTerminal();
     });
     newFileBtn.addEventListener('click', () => {
         console.log('ui-logic.js: New File button clicked');
@@ -256,18 +256,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     themeSwitcher.addEventListener('change', () => {
         console.log('ui-logic.js: Theme switcher changed');
-        if (themeSwitcher.checked) {
-            document.documentElement.setAttribute('data-bs-theme', 'dark');
-            editor.setOption('theme', 'material-darker');
-        } else {
-            document.documentElement.setAttribute('data-bs-theme', 'light');
-            editor.setOption('theme', 'default');
-        }
+        const isDark = themeSwitcher.checked;
+        document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+        editor.setOption('theme', isDark ? 'material-darker' : 'default');
+        setTerminalTheme(isDark);
     });
 
     // --- Initial Load ---
     console.log('ui-logic.js: Starting initial load');
     loadFiles();
+    initializeTerminal('terminal');
     initializeWorkerPyodide();
     await initializeMainThreadPyodide();
     console.log('ui-logic.js: Initial load complete');

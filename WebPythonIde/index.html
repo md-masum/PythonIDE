@@ -9,6 +9,7 @@
     <link rel="stylesheet" href="codemirror/codemirror.css">
     <link rel="stylesheet" href="codemirror/theme.css">
     <link rel="stylesheet" href="style.css"> <!-- Using the main style.css now -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm/css/xterm.css" />
     <script src="pyodide/pyodide.js"></script>
     
 </head>
@@ -67,7 +68,7 @@
                     <!-- Output Column -->
                     <div class="col-md-6 d-flex flex-column output-col">
                         <h5 class="pb-2 mb-0">Output</h5>
-                        <pre id="output" class="flex-grow-1 p-2 rounded"></pre>
+                        <div id="terminal" class="flex-grow-1 p-2 rounded"></div>
                     </div>
                 </div>
             </main>
@@ -85,6 +86,9 @@
     <script src="bootstrap/bootstrap.bundle.min.js"></script>
     <script src="codemirror/codemirror.js"></script>
     <script src="codemirror/python.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm/lib/xterm.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/xterm-addon-fit/lib/xterm-addon-fit.js"></script>
+    <script src="script/terminal.js" type="module" defer></script>
     <script src="script/pyodide-mainThread.js" type="module" defer></script>
     <script src="script/pyodide-logic.js" type="module" defer></script>
     <script src="script/ui-logic.js" type="module" defer></script>

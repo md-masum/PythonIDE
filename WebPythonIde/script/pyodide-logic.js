@@ -1,11 +1,11 @@
 console.log('pyodide-logic.js: Script loaded');
 
 const loader = document.getElementById('loader');
-const output = document.getElementById('output');
 const runBtn = document.getElementById('run-btn');
 const terminateBtn = document.getElementById('terminate-btn');
 
 import { runPythonCodeMainThread, terminateMainThreadExecution } from './pyodide-mainThread.js';
+import { writeToTerminal, clearTerminal } from './terminal.js';
 
 let workerPyodideInstance = null;
 
@@ -26,11 +26,7 @@ export function initializeWorkerPyodide() {
         const { type, status, output: workerOutput, isError, error, content } = event.data;
 
         if (type === 'realtime_output') {
-            if (output.textContent.includes('Code execution started')) {
-                output.textContent += content;
-            } else {
-                output.textContent = `Code execution started at: ${new Date().toLocaleTimeString()}\n\n${content}`;
-            }
+            writeToTerminal(content);
             return;
         }
 
@@ -40,37 +36,37 @@ export function initializeWorkerPyodide() {
                 loader.style.display = 'block';
                 runBtn.disabled = true;
                 terminateBtn.style.display = 'none';
-                output.textContent = 'Loading Pyodide...';
+                clearTerminal();
+                writeToTerminal('Loading Pyodide...');
                 break;
             case 'ready':
                 console.log('pyodide-logic.js: Worker status: ready');
                 loader.style.display = 'none';
                 runBtn.disabled = false;
-                output.textContent = 'Pyodide loaded. Ready to run Python code.';
+                writeToTerminal('\r\nPyodide loaded. Ready to run Python code.\r\n');
                 break;
             case 'running':
                 console.log('pyodide-logic.js: Worker status: running');
                 startTime = new Date();
                 runBtn.disabled = true;
                 terminateBtn.style.display = 'inline-block';
-                output.textContent = `Code execution started at: ${startTime.toLocaleTimeString()}\n\n`;
+                clearTerminal();
+                writeToTerminal(`Code execution started at: ${startTime.toLocaleTimeString()}\r\n\r\n`);
                 break;
             case 'complete':
                 console.log('pyodide-logic.js: Worker status: complete');
                 const endTime = new Date();
                 const executionTime = endTime - startTime;
-                output.textContent += `\n\nCode execution complete at: ${endTime.toLocaleTimeString()}\nTotal execution time: ${executionTime} ms`;
+                writeToTerminal(`\r\n\r\nCode execution complete at: ${endTime.toLocaleTimeString()}\r\nTotal execution time: ${executionTime} ms\r\n`);
                 runBtn.disabled = false;
                 terminateBtn.style.display = 'none';
-                // Output is handled by 'realtime_output' type messages
                 break;
             case 'error':
                 console.log('pyodide-logic.js: Worker status: error', error);
                 loader.style.display = 'none';
                 runBtn.disabled = false;
                 terminateBtn.style.display = 'none';
-                output.textContent = `Error: ${error}`;
-                output.style.color = 'red';
+                writeToTerminal(`\r\nError: ${error}`);
                 break;
         }
     };
@@ -80,11 +76,11 @@ export function initializeWorkerPyodide() {
         loader.style.display = 'none';
         runBtn.disabled = false;
         terminateBtn.style.display = 'none';
-        output.textContent = `Worker Error: ${errorEvent.message || errorEvent.error || 'Unknown worker error'}`;
+        let errorMessage = `Worker Error: ${errorEvent.message || errorEvent.error || 'Unknown worker error'}`;
         if (errorEvent.filename) {
-            output.textContent += `\nFile: ${errorEvent.filename}, Line: ${errorEvent.lineno}, Column: ${errorEvent.colno}`;
+            errorMessage += `\r\nFile: ${errorEvent.filename}, Line: ${errorEvent.lineno}, Column: ${errorEvent.colno}`;
         }
-        output.style.color = 'red';
+        writeToTerminal(errorMessage);
     };
 
     console.log('pyodide-logic.js: Initializing worker');
@@ -93,8 +89,6 @@ export function initializeWorkerPyodide() {
 
 export function runPythonCodeWorker(code) {
     console.log('pyodide-logic.js: runPythonCodeWorker function triggered');
-    output.textContent = 'Running...'; // Set running message
-    output.style.color = ''; // Reset color
     if (workerPyodideInstance) {
         console.log('pyodide-logic.js: Sending code to worker');
         workerPyodideInstance.postMessage({ type: 'run', code: code });
@@ -107,8 +101,7 @@ export function terminateWorkerExecution() {
         console.log('pyodide-logic.js: Terminating worker');
         workerPyodideInstance.terminate();
         initializeWorkerPyodide(); // Re-initialize worker after termination
-        output.textContent = 'Execution terminated.';
-        output.style.color = 'orange';
+        writeToTerminal('\r\nExecution terminated.\r\n');
     }
 }
 
