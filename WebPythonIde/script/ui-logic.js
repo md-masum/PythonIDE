@@ -1,7 +1,11 @@
+console.log('ui-logic.js: Script loaded');
+
 import { initializeWorkerPyodide, runPythonCode, terminatePythonExecution } from './pyodide-logic.js';
 import { initializeMainThreadPyodide } from './pyodide-mainThread.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
+    console.log('ui-logic.js: DOMContentLoaded event fired');
+
     const output = document.getElementById('output');
     const runBtn = document.getElementById('run-btn');
     const clearBtn = document.getElementById('clear-btn');
@@ -15,6 +19,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     const themeSwitcher = document.getElementById('theme-switcher');
 
     // --- CodeMirror Editor Initialization ---
+    console.log('ui-logic.js: Initializing CodeMirror editor');
     const editor = CodeMirror(document.getElementById('editor'), {
         mode: 'python',
         theme: 'material-darker',
@@ -26,8 +31,12 @@ document.addEventListener('DOMContentLoaded', async () => {
     let activeFileId = null;
 
     // --- File System Functions ---
-    const saveFiles = () => localStorage.setItem('python_ide_files', JSON.stringify(files));
+    const saveFiles = () => {
+        console.log('ui-logic.js: saveFiles function triggered');
+        localStorage.setItem('python_ide_files', JSON.stringify(files));
+    };
     const loadFiles = () => {
+        console.log('ui-logic.js: loadFiles function triggered');
         const savedFiles = localStorage.getItem('python_ide_files');
         if (savedFiles) {
             files = JSON.parse(savedFiles);
@@ -43,6 +52,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const createNewFile = (defaultName = '', promptUser = true) => {
+        console.log('ui-logic.js: createNewFile function triggered');
         let fileName = defaultName;
         if (promptUser) {
             fileName = prompt("Enter filename:", defaultName || "Untitled.py");
@@ -62,6 +72,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const deleteFile = (fileId) => {
+        console.log('ui-logic.js: deleteFile function triggered for file:', fileId);
         if (!confirm("Are you sure you want to delete this file?")) return;
 
         files = files.filter(f => f.id !== fileId);
@@ -77,6 +88,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const downloadFile = (fileId) => {
+        console.log('ui-logic.js: downloadFile function triggered for file:', fileId);
         const file = files.find(f => f.id === fileId);
         if (file) {
             const blob = new Blob([file.content], { type: 'text/plain' });
@@ -90,6 +102,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const renameFile = (fileId) => {
+        console.log('ui-logic.js: renameFile function triggered for file:', fileId);
         const file = files.find(f => f.id === fileId);
         if (file) {
             const newName = prompt("Enter new filename:", file.name);
@@ -105,8 +118,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     runBtn.addEventListener('click', () => {
+        console.log('ui-logic.js: Run button clicked');
         const code = editor.getValue();
         if (!code.trim()) {
+            console.log('ui-logic.js: Code is empty, not running');
             return; // Don't run empty code
         }
 
@@ -115,11 +130,13 @@ document.addEventListener('DOMContentLoaded', async () => {
             activeFile.content = code;
             saveFiles();
             const usesInput = /input\s*\(/.test(code);
+            console.log(`ui-logic.js: Running code for file: ${activeFile.name}, usesInput: ${usesInput}`);
             runPythonCode(activeFile.content, usesInput);
         } 
     });
 
     const setActiveFile = (fileId) => {
+        console.log('ui-logic.js: setActiveFile function triggered for file:', fileId);
         saveActiveFileContent(); // Save previous file before switching
         activeFileId = fileId;
         output.textContent = ''; // Clear output on file change
@@ -128,6 +145,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const loadActiveFile = () => {
+        console.log('ui-logic.js: loadActiveFile function triggered');
         const activeFile = files.find(f => f.id === activeFileId);
         if (activeFile) {
             editor.setValue(activeFile.content);
@@ -140,7 +158,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const renderFileList = () => {
-        console.log('Rendering file list:', files);
+        console.log('ui-logic.js: renderFileList function triggered');
         fileList.innerHTML = '';
         files.forEach(file => {
             const li = document.createElement('li');
@@ -212,6 +230,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     const saveActiveFileContent = () => {
+        console.log('ui-logic.js: saveActiveFileContent function triggered');
         const activeFile = files.find(f => f.id === activeFileId);
         if (activeFile) {
             activeFile.content = editor.getValue();
@@ -220,15 +239,23 @@ document.addEventListener('DOMContentLoaded', async () => {
     };
 
     terminateBtn.addEventListener('click', () => {
+        console.log('ui-logic.js: Terminate button clicked');
         const code = editor.getValue();
         const usesInput = /input\s*\(/.test(code);
         terminatePythonExecution(usesInput);
     });
 
-    clearBtn.addEventListener('click', () => output.textContent = '');
-    newFileBtn.addEventListener('click', () => createNewFile());
+    clearBtn.addEventListener('click', () => {
+        console.log('ui-logic.js: Clear button clicked');
+        output.textContent = '';
+    });
+    newFileBtn.addEventListener('click', () => {
+        console.log('ui-logic.js: New File button clicked');
+        createNewFile();
+    });
 
     themeSwitcher.addEventListener('change', () => {
+        console.log('ui-logic.js: Theme switcher changed');
         if (themeSwitcher.checked) {
             document.documentElement.setAttribute('data-bs-theme', 'dark');
             editor.setOption('theme', 'material-darker');
@@ -239,7 +266,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
     // --- Initial Load ---
+    console.log('ui-logic.js: Starting initial load');
     loadFiles();
     initializeWorkerPyodide();
     await initializeMainThreadPyodide();
+    console.log('ui-logic.js: Initial load complete');
 });
