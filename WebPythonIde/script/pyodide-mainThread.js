@@ -58,7 +58,8 @@ export async function initializeMainThreadPyodide() {
 
 export async function runPythonCodeMainThread(code) {
     console.log('pyodide-mainThread.js: runPythonCodeMainThread function triggered');
-    output.textContent = ''; // Clear output at the start of a new run
+    const startTime = new Date();
+    output.textContent = `Code execution started at: ${startTime.toLocaleTimeString()}\n\n`;
     output.style.color = ''; // Reset color
     runBtn.disabled = true;
     terminateBtn.style.display = 'inline-block'; // Show terminate button for main thread
@@ -107,7 +108,9 @@ output
             output.textContent += stdout;
             output.style.color = '';
         }
-        output.textContent += '\nExecution finished.';
+        const endTime = new Date();
+        const executionTime = endTime - startTime;
+        output.textContent += `\n\nCode execution complete at: ${endTime.toLocaleTimeString()}\nTotal execution time: ${executionTime} ms`;
         console.log('pyodide-mainThread.js: Python code execution complete');
     } catch (err) {
         console.error('pyodide-mainThread.js: Main Thread Python execution failed:', err);

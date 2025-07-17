@@ -9,6 +9,8 @@ import { runPythonCodeMainThread, terminateMainThreadExecution } from './pyodide
 
 let workerPyodideInstance = null;
 
+let startTime;
+
 // --- Worker Pyodide Functions ---
 export function initializeWorkerPyodide() {
     console.log('pyodide-logic.js: initializeWorkerPyodide function triggered');
@@ -24,14 +26,12 @@ export function initializeWorkerPyodide() {
         const { type, status, output: workerOutput, isError, error, content } = event.data;
 
         if (type === 'realtime_output') {
-            if(output.textContent == 'Running...'){
-                output.textContent = content;
-                return;
-            }else{
+            if (output.textContent.includes('Code execution started')) {
                 output.textContent += content;
-                return;
+            } else {
+                output.textContent = `Code execution started at: ${new Date().toLocaleTimeString()}\n\n${content}`;
             }
-            
+            return;
         }
 
         switch (status) {
@@ -50,12 +50,16 @@ export function initializeWorkerPyodide() {
                 break;
             case 'running':
                 console.log('pyodide-logic.js: Worker status: running');
+                startTime = new Date();
                 runBtn.disabled = true;
                 terminateBtn.style.display = 'inline-block';
-                output.textContent = 'Running...';
+                output.textContent = `Code execution started at: ${startTime.toLocaleTimeString()}\n\n`;
                 break;
             case 'complete':
                 console.log('pyodide-logic.js: Worker status: complete');
+                const endTime = new Date();
+                const executionTime = endTime - startTime;
+                output.textContent += `\n\nCode execution complete at: ${endTime.toLocaleTimeString()}\nTotal execution time: ${executionTime} ms`;
                 runBtn.disabled = false;
                 terminateBtn.style.display = 'none';
                 // Output is handled by 'realtime_output' type messages
