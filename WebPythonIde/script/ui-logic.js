@@ -18,6 +18,33 @@ document.addEventListener('DOMContentLoaded', async () => {
 
     const themeSwitcher = document.getElementById('theme-switcher');
 
+    // --- Theme Functions ---
+    const applyTheme = (isDark) => {
+        console.log(`ui-logic.js: applyTheme called with isDark: ${isDark}`);
+        document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+        editor.setOption('theme', isDark ? 'material-darker' : 'default');
+        setTerminalTheme(isDark);
+        themeSwitcher.checked = isDark;
+    };
+
+    const loadTheme = () => {
+        console.log('ui-logic.js: loadTheme called');
+        const savedTheme = localStorage.getItem('python_ide_theme');
+        console.log(`ui-logic.js: Loaded theme from localStorage: ${savedTheme}`);
+        // Default to dark theme if no theme is saved
+        applyTheme(savedTheme ? savedTheme === 'dark' : true);
+    };
+
+    const saveTheme = (theme) => {
+        console.log(`ui-logic.js: saveTheme called with theme: ${theme}`);
+        try {
+            localStorage.setItem('python_ide_theme', theme);
+            console.log('ui-logic.js: Theme saved to localStorage successfully.');
+        } catch (e) {
+            console.error('ui-logic.js: Error saving theme to localStorage:', e);
+        }
+    };
+
     // --- CodeMirror Editor Initialization ---
     console.log('ui-logic.js: Initializing CodeMirror editor');
     const editor = CodeMirror(document.getElementById('editor'), {
@@ -257,15 +284,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     themeSwitcher.addEventListener('change', () => {
         console.log('ui-logic.js: Theme switcher changed');
         const isDark = themeSwitcher.checked;
-        document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
-        editor.setOption('theme', isDark ? 'material-darker' : 'default');
-        setTerminalTheme(isDark);
+        applyTheme(isDark);
+        saveTheme(isDark ? 'dark' : 'light');
     });
 
     // --- Initial Load ---
     console.log('ui-logic.js: Starting initial load');
     loadFiles();
-    initializeTerminal('terminal');
+    initializeTerminal('terminal'); // Initialize terminal first
+    loadTheme(); // Then load the theme
     writeToTerminal('Loading Pyodide\n');
     await initializeMainThreadPyodide();
     initializeWorkerPyodide();

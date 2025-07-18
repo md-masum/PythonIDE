@@ -1,8 +1,9 @@
 console.log('terminal.js: Script loaded');
 
-const term = new Terminal({
+export const term = new Terminal({
     convertEol: true,
     cursorBlink: true,
+    wordWrap: false, // Disable word wrapping
     theme: {
         background: '#343a40', // A slightly lighter dark gray
         foreground: '#f8f9fa', // Light gray for text
@@ -31,18 +32,19 @@ export function clearTerminal() {
 }
 
 export function setTerminalTheme(isDark) {
-    term.setOption('theme', isDark ? 
-        {
+    term.options.theme = isDark 
+        ? {
             background: '#343a40',
             foreground: '#f8f9fa',
             cursor: 'rgba(255, 255, 255, .5)',
             selection: 'rgba(255, 255, 255, 0.3)'
-        } : 
-        {
+        }
+        : {
             background: '#f8f9fa',
             foreground: '#212529',
             cursor: 'rgba(0, 0, 0, .5)',
             selection: 'rgba(0, 0, 0, 0.3)'
-        }
-    );
+        };
+
+    term.refresh(0, term.rows - 1); // ✅ Correct usage
 }
