@@ -50,27 +50,27 @@
             </div>
 
             <!-- Editor and Output Section -->
-            <main class="flex-grow-1 d-flex flex-column p-2">
-                <div class="row flex-grow-1 g-2">
-                    <!-- Editor Column -->
-                    <div class="col-md-6 d-flex flex-column editor-col">
-                        <div class="d-flex justify-content-between align-items-center pb-2">
-                            <h5 id="editor-filename" class="mb-0"></h5>
-                            <div>
+            <main class="flex-grow-1 d-flex flex-column flex-md-row p-2 gap-2">
+
+                <!-- Editor Column -->
+                <div class="d-flex flex-column editor-col w-100 w-md-50">
+                    <div class="d-flex align-items-center pb-2 flex-shrink-0 flex-wrap">
+                            <h5 id="editor-filename" class="mb-0 me-auto text-truncate"></h5>
+                            <div class="btn-group btn-group-sm" role="group">
                                 <button id="run-btn" class="btn btn-primary">Run</button>
                                 <button id="terminate-btn" class="btn btn-warning" style="display: none;">Terminate</button>
                                 <button id="clear-btn" class="btn btn-secondary">Clear Output</button>
                             </div>
                         </div>
-                        <div id="editor" class="flex-grow-1"></div>
-                    </div>
-
-                    <!-- Output Column -->
-                    <div class="col-md-6 d-flex flex-column output-col">
-                        <h5 class="pb-2 mb-0">Output</h5>
-                        <div id="terminal" class="flex-grow-1 p-2 rounded"></div>
-                    </div>
+                    <div id="editor" class="flex-grow-1"></div>
                 </div>
+
+                <!-- Output Column -->
+                <div class="d-flex flex-column output-col w-100 w-md-50">
+                    <h5 class="pb-2 mb-0 flex-shrink-0">Output</h5>
+                    <div id="terminal" class="flex-grow-1 p-2 rounded"></div>
+                </div>
+
             </main>
         </div>
     </div>
