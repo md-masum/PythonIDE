@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             name: fileName,
             content: '# Your Python code here\n'
         };
-        files.push(newFile);
+        files.unshift(newFile);
         activeFileId = newFile.id;
         saveFiles();
         renderFileList();
@@ -328,7 +328,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                     name: selectedExample.name,
                     content: selectedExample.code
                 };
-                files.push(newFile);
+                files.unshift(newFile);
                 activeFileId = newFile.id;
                 saveFiles();
                 renderFileList();
