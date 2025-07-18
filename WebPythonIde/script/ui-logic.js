@@ -2,7 +2,7 @@ console.log('ui-logic.js: Script loaded');
 
 import { initializeWorkerPyodide, runPythonCode, terminatePythonExecution } from './pyodide-logic.js';
 import { initializeMainThreadPyodide } from './pyodide-mainThread.js';
-import { initializeTerminal, clearTerminal, setTerminalTheme } from './terminal.js';
+import { initializeTerminal, clearTerminal, setTerminalTheme, writeToTerminal } from './terminal.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('ui-logic.js: DOMContentLoaded event fired');
@@ -266,7 +266,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.log('ui-logic.js: Starting initial load');
     loadFiles();
     initializeTerminal('terminal');
-    initializeWorkerPyodide();
+    writeToTerminal('Loading Pyodide\n');
     await initializeMainThreadPyodide();
+    initializeWorkerPyodide();
+    writeToTerminal('Pyodide loaded. Ready to run Python code.\n');
     console.log('ui-logic.js: Initial load complete');
 });

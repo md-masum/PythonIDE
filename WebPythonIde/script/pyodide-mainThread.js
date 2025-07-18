@@ -14,7 +14,6 @@ export async function initializeMainThreadPyodide() {
     loader.style.display = 'block';
     runBtn.disabled = true;
     terminateBtn.style.display = 'none';
-    writeToTerminal('Loading Pyodide (Main Thread)...');
 
     try {
         console.log('pyodide-mainThread.js: Loading Pyodide');
@@ -44,7 +43,6 @@ export async function initializeMainThreadPyodide() {
             __builtins__.input = custom_input
         `);
 
-        writeToTerminal('\r\nPyodide loaded (Main Thread). Ready to run Python code.\r\n');
         console.log('pyodide-mainThread.js: Pyodide initialization complete');
     } catch (error) {
         console.error('pyodide-mainThread.js: Main Thread Pyodide initialization failed:', error);

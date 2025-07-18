@@ -36,14 +36,11 @@ export function initializeWorkerPyodide() {
                 loader.style.display = 'block';
                 runBtn.disabled = true;
                 terminateBtn.style.display = 'none';
-                clearTerminal();
-                writeToTerminal('Loading Pyodide...');
                 break;
             case 'ready':
                 console.log('pyodide-logic.js: Worker status: ready');
                 loader.style.display = 'none';
                 runBtn.disabled = false;
-                writeToTerminal('\r\nPyodide loaded. Ready to run Python code.\r\n');
                 break;
             case 'running':
                 console.log('pyodide-logic.js: Worker status: running');
