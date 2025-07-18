@@ -192,11 +192,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         fileList.innerHTML = '';
         files.forEach(file => {
             const li = document.createElement('li');
-            li.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
+            li.className = 'nav-item';
             li.dataset.id = file.id;
             if (file.id === activeFileId) {
                 li.classList.add('active');
             }
+
+            const fileLink = document.createElement('a');
+            fileLink.className = 'nav-link';
+            fileLink.href = '#';
 
             const fileNameSpan = document.createElement('span');
             fileNameSpan.className = 'file-name';
@@ -247,7 +251,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             dropdownDiv.appendChild(toggleBtn);
             dropdownDiv.appendChild(dropdownMenu);
 
-            li.appendChild(fileNameSpan);
+            fileLink.appendChild(fileNameSpan);
+            li.appendChild(fileLink);
+
             li.appendChild(dropdownDiv);
             fileList.appendChild(li);
         });
