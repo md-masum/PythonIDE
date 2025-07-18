@@ -3,6 +3,7 @@ console.log('ui-logic.js: Script loaded');
 import { initializeWorkerPyodide, runPythonCode, terminatePythonExecution } from './pyodide-logic.js';
 import { initializeMainThreadPyodide } from './pyodide-mainThread.js';
 import { initializeTerminal, clearTerminal, setTerminalTheme, writeToTerminal } from './terminal.js';
+import { exampleCode } from './example-code.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('ui-logic.js: DOMContentLoaded event fired');
@@ -293,6 +294,36 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadFiles();
     initializeTerminal('terminal'); // Initialize terminal first
     loadTheme(); // Then load the theme
+
+    // --- Event Listeners for Examples ---
+    document.querySelectorAll('.dropdown-item[data-example]').forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const exampleKey = e.target.dataset.example;
+            const example = exampleCode[exampleKey];
+            if (example) {
+                // Check if a file with the same name already exists
+                let existingFile = files.find(f => f.name === example.name);
+                if (existingFile) {
+                    // If it exists, just make it active
+                    setActiveFile(existingFile.id);
+                } else {
+                    // Otherwise, create a new file
+                    const newFile = {
+                        id: Date.now().toString(),
+                        name: example.name,
+                        content: example.code
+                    };
+                    files.push(newFile);
+                    activeFileId = newFile.id;
+                    saveFiles();
+                    renderFileList();
+                    loadActiveFile();
+                }
+            }
+        });
+    });
+
     writeToTerminal('Loading Pyodide\n');
     await initializeMainThreadPyodide();
     initializeWorkerPyodide();

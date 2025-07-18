@@ -22,6 +22,41 @@
                     &#9776; Files
                 </button>
                 <a class="navbar-brand mx-auto" href="#">Offline Python IDE</a>
+
+                <ul class="navbar-nav">
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="basic-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Basic
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="basic-dropdown">
+                            <li><a class="dropdown-item" href="#" data-example="variables">Variables & Data Types</a></li>
+                            <li><a class="dropdown-item" href="#" data-example="operators">Operators</a></li>
+                            <li><a class="dropdown-item" href="#" data-example="loops">Loops</a></li>
+                            <li><a class="dropdown-item" href="#" data-example="conditionals">Conditionals</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="intermediate-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Intermediate
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="intermediate-dropdown">
+                            <li><a class="dropdown-item" href="#" data-example="functions">Functions</a></li>
+                            <li><a class="dropdown-item" href="#" data-example="lists">Lists & Tuples</a></li>
+                            <li><a class="dropdown-item" href="#" data-example="dictionaries">Dictionaries</a></li>
+                            <li><a class="dropdown-item" href="#" data-example="files">File Handling (Simulated)</a></li>
+                        </ul>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="advanced-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Advanced
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="advanced-dropdown">
+                            <li><a class="dropdown-item" href="#" data-example="classes">Classes & Objects</a></li>
+                            <li><a class="dropdown-item" href="#" data-example="exceptions">Exception Handling</a></li>
+                            <li><a class="dropdown-item" href="#" data-example="imports">Modules & Imports</a></li>
+                        </ul>
+                    </li>
+                </ul>
                 <div class="form-check form-switch">
                     <input class="form-check-input" type="checkbox" role="switch" id="theme-switcher">
                     <label class="form-check-label" for="theme-switcher">Dark Mode</label>
@@ -88,6 +123,7 @@
     <script src="codemirror/python.js"></script>
     <script src="xterm/xterm.js"></script>
     <script src="xterm/xterm-addon-fit.js"></script>
+    <script src="script/example-code.js" type="module"></script>
     <script src="script/terminal.js" type="module" defer></script>
     <script src="script/pyodide-mainThread.js" type="module" defer></script>
     <script src="script/pyodide-logic.js" type="module" defer></script>
