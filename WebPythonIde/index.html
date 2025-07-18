@@ -128,5 +128,24 @@
     <script src="script/pyodide-mainThread.js" type="module" defer></script>
     <script src="script/pyodide-logic.js" type="module" defer></script>
     <script src="script/ui-logic.js" type="module" defer></script>
+
+    <!-- Modal for Example Code -->
+    <div class="modal fade" id="example-modal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">Load Example Code</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    How would you like to load this example?
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="load-in-current-file-btn">Load in Current File</button>
+                    <button type="button" class="btn btn-primary" id="create-new-file-from-example-btn">Create New File</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </body>
 </html>

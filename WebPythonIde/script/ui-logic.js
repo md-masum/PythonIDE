@@ -18,6 +18,8 @@ document.addEventListener('DOMContentLoaded', async () => {
     const formatBtn = document.getElementById('format-btn');
 
     const themeSwitcher = document.getElementById('theme-switcher');
+    const exampleModal = new bootstrap.Modal(document.getElementById('example-modal'));
+    let selectedExample = null;
 
     // --- Theme Functions ---
     const applyTheme = (isDark) => {
@@ -300,28 +302,40 @@ document.addEventListener('DOMContentLoaded', async () => {
         item.addEventListener('click', (e) => {
             e.preventDefault();
             const exampleKey = e.target.dataset.example;
-            const example = exampleCode[exampleKey];
-            if (example) {
-                // Check if a file with the same name already exists
-                let existingFile = files.find(f => f.name === example.name);
-                if (existingFile) {
-                    // If it exists, just make it active
-                    setActiveFile(existingFile.id);
-                } else {
-                    // Otherwise, create a new file
-                    const newFile = {
-                        id: Date.now().toString(),
-                        name: example.name,
-                        content: example.code
-                    };
-                    files.push(newFile);
-                    activeFileId = newFile.id;
-                    saveFiles();
-                    renderFileList();
-                    loadActiveFile();
-                }
+            selectedExample = exampleCode[exampleKey];
+            if (selectedExample) {
+                exampleModal.show();
             }
         });
+    });
+
+    document.getElementById('load-in-current-file-btn').addEventListener('click', () => {
+        if (selectedExample) {
+            editor.setValue(selectedExample.code);
+            saveActiveFileContent();
+            exampleModal.hide();
+        }
+    });
+
+    document.getElementById('create-new-file-from-example-btn').addEventListener('click', () => {
+        if (selectedExample) {
+            let existingFile = files.find(f => f.name === selectedExample.name);
+            if (existingFile) {
+                setActiveFile(existingFile.id);
+            } else {
+                const newFile = {
+                    id: Date.now().toString(),
+                    name: selectedExample.name,
+                    content: selectedExample.code
+                };
+                files.push(newFile);
+                activeFileId = newFile.id;
+                saveFiles();
+                renderFileList();
+                loadActiveFile();
+            }
+            exampleModal.hide();
+        }
     });
 
     writeToTerminal('Loading Pyodide\n');
