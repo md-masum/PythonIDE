@@ -213,7 +213,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
             const toggleBtn = document.createElement('button');
             toggleBtn.className = 'btn btn-sm btn-secondary';
-            toggleBtn.setAttribute('data-bs-toggle', 'dropdown');
+            toggleBtn.setAttribute('data-toggle', 'dropdown');
             toggleBtn.setAttribute('aria-expanded', 'false');
             toggleBtn.innerHTML = '&#x22EE;'; // 
 
@@ -252,18 +252,15 @@ document.addEventListener('DOMContentLoaded', async () => {
             dropdownDiv.appendChild(toggleBtn);
             dropdownDiv.appendChild(dropdownMenu);
 
+            // Initialize dropdown for the newly created button
+            $(toggleBtn).dropdown();
+
             fileLink.appendChild(fileNameSpan);
             li.appendChild(fileLink);
 
             li.appendChild(dropdownDiv);
             fileList.appendChild(li);
         });
-
-        // Initialize dropdowns
-        // const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
-        // dropdownElementList.map(function (dropdownToggleEl) {
-        //     return new bootstrap.Dropdown(dropdownToggleEl);
-        // });
     };
 
     const saveActiveFileContent = () => {
