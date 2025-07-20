@@ -18,8 +18,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const formatBtn = document.getElementById('format-btn');
 
     const themeSwitcher = document.getElementById('theme-switcher');
-    // const exampleModal = new bootstrap.Modal(document.getElementById('example-modal'));
-    // Bootstrap 4 modal, no need to create via JS. Just trigger via jQuery
     const exampleModalEl = $('#example-modal');
 
     let selectedExample = null;
@@ -27,7 +25,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // --- Theme Functions ---
     const applyTheme = (isDark) => {
         console.log(`ui-logic.js: applyTheme called with isDark: ${isDark}`);
-        document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+        document.body.classList.toggle('dark-theme', isDark);
         editor.setOption('theme', isDark ? 'material-darker' : 'default');
         setTerminalTheme(isDark);
         themeSwitcher.checked = isDark;
@@ -313,7 +311,6 @@ document.addEventListener('DOMContentLoaded', async () => {
             const exampleKey = e.target.dataset.example;
             selectedExample = exampleCode[exampleKey];
             if (selectedExample) {
-                // exampleModal.show();
                 exampleModalEl.modal('show');
             }
         });
@@ -323,7 +320,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (selectedExample) {
             editor.setValue(selectedExample.code);
             saveActiveFileContent();
-            // exampleModal.hide();
             exampleModalEl.modal('hide');
         }
     });
@@ -345,7 +341,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 renderFileList();
                 loadActiveFile();
             }
-            exampleModal.hide();
+            exampleModalEl.modal('hide');
         }
     });
 
