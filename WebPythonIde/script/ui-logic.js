@@ -18,7 +18,10 @@ document.addEventListener('DOMContentLoaded', async () => {
     const formatBtn = document.getElementById('format-btn');
 
     const themeSwitcher = document.getElementById('theme-switcher');
-    const exampleModal = new bootstrap.Modal(document.getElementById('example-modal'));
+    // const exampleModal = new bootstrap.Modal(document.getElementById('example-modal'));
+    // Bootstrap 4 modal, no need to create via JS. Just trigger via jQuery
+    const exampleModalEl = $('#example-modal');
+
     let selectedExample = null;
 
     // --- Theme Functions ---
@@ -259,10 +262,10 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
 
         // Initialize dropdowns
-        const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
-        dropdownElementList.map(function (dropdownToggleEl) {
-            return new bootstrap.Dropdown(dropdownToggleEl);
-        });
+        // const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
+        // dropdownElementList.map(function (dropdownToggleEl) {
+        //     return new bootstrap.Dropdown(dropdownToggleEl);
+        // });
     };
 
     const saveActiveFileContent = () => {
@@ -310,7 +313,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const exampleKey = e.target.dataset.example;
             selectedExample = exampleCode[exampleKey];
             if (selectedExample) {
-                exampleModal.show();
+                // exampleModal.show();
+                exampleModalEl.modal('show');
             }
         });
     });
@@ -319,7 +323,8 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (selectedExample) {
             editor.setValue(selectedExample.code);
             saveActiveFileContent();
-            exampleModal.hide();
+            // exampleModal.hide();
+            exampleModalEl.modal('hide');
         }
     });
 

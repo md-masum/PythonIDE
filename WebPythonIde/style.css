@@ -1,137 +1,27 @@
-/* Ensure full height for main layout components */
-html, body {
-    height: 100%;
-    overflow: hidden; /* Prevent double scrollbars */
-}
 
-/* Styles for the offcanvas panel on desktop */
-@media (min-width: 992px) {
-  #offcanvasPanel {
-    position: relative !important;
-    transform: none !important;
-    visibility: visible !important;
-    border-right: 1px solid var(--bs-border-color);
-    width: 280px;
-  }
-
-  .offcanvas-backdrop {
-    display: none !important;
-  }
-  .offcanvas-header {
-        display: none; 
-    }
-    .offcanvas-body {
-        padding: 0; 
-    }
-}
-
-/* Define column behavior for both editor and output */
-.editor-col, .output-col {
+/* Style for the file list in the navigation bar */
+#file-list .nav-item {
     display: flex;
-    flex-direction: column;
-    overflow: hidden; /* Prevent content from spilling out */
-}
-
-/* Ensure editor and terminal containers grow and scroll independently */
-#editor, #terminal {
-    flex-grow: 1; /* Allow these elements to grow */
-    overflow-y: auto; /* Add vertical scrollbar ONLY when needed */
-    border: 1px solid var(--bs-border-color);
-    border-radius: 0.25rem;
-    background-color: var(--bs-body-bg);
-    min-height: 0; /* Important for flexbox scrolling */
-}
-
-/* CodeMirror specific height fix */
-.CodeMirror {
-    height: 100% !important;
-}
-
-/* List item styling for file list */
-.list-group-item {
-    cursor: pointer;
-    background-color: transparent;
-    border: none;
-    color: var(--bs-body-color);
-    padding: 0.5rem 0.75rem;
-    font-size: 0.95rem;
-    display: flex;
-    justify-content: space-between;
     align-items: center;
-    transition: background 0.2s ease;
+    justify-content: space-between;
+    padding-right: 10px;
 }
 
-.list-group-item:hover {
-  background-color: rgba(255, 255, 255, 0.05);
-}
-
-.list-group-item.active {
-  background-color: #007acc;
-  color: #fff;
-  font-weight: bold;
-  border-radius: 4px;
-}
-
-.dropdown-toggle::after {
-    display: none;
-}
-
-/* Mobile-specific styles (stacked layout) */
-@media (max-width: 767.98px) {
-    main {
-        flex-direction: column !important; /* Stack columns vertically */
-    }
-    .editor-col, .output-col {
-        height: 50vh; /* Each takes 50% of viewport height */
-        width: 100% !important;
-    }
-}
-
-/* Terminal styling */
-#terminal {
-    width: 100%;
-    padding: 10px;
-    font-family: monospace;
-}
-
-/* Custom scrollbar for webkit browsers */
-::-webkit-scrollbar {
-    width: 8px;
-    height: 8px;
-}
-
-::-webkit-scrollbar-track {
-    background: #2c3034;
-}
-
-::-webkit-scrollbar-thumb {
-    background: #555;
-    border-radius: 4px;
-}
-
-::-webkit-scrollbar-thumb:hover {
-    background: #666;
-}
-
-/* Loader styling */
-#loader {
-    z-index: 1060; /* Ensure it's above other content */
-}
-
-/* Ensure dropdown menu is visible */
-.dropdown-menu {
-    z-index: 1050;
-}
-
-/* Ensure file name and dropdown are spaced out */
-.list-group-item .file-name {
-    flex-grow: 1;
+#file-list .nav-item .nav-link {
+    flex: 1;
+    white-space: nowrap;
     overflow: hidden;
     text-overflow: ellipsis;
-    white-space: nowrap;
-    margin-right: 10px;
 }
 
-.list-group-item .dropdown {
-    flex-shrink: 0;
+#file-list .nav-item .file-name {
+    display: inline-block;
+    max-width: 150px; /* ✅ Limit width */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+#new-file-btn {
+    cursor: pointer;
 }
