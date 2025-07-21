@@ -197,7 +197,7 @@
                                     <h6 class="m-0 font-weight-bold text-primary">Terminal</h6>
                                 </div>
                                 <div class="card-body">
-                                    <pre id="terminal" class="terminal" style="width: 100%; height: 400px; background-color: black; color: limegreen; padding: 10px; overflow-y: auto; font-family: 'Courier New', Courier, monospace;"></pre>
+                                    <pre id="terminal" class="terminal" style="width: 100%; height: 100%; background-color: black; color: limegreen; padding: 10px; overflow-y: auto; font-family: 'Courier New', Courier, monospace;"></pre>
                                 </div>
                             </div>
                         </div>
@@ -219,6 +219,16 @@
 
             </div>
             <!-- End of Main Content -->
+
+             <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; <span id="footer-year"></span> Offline Python IDE</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
         </div>
         <!-- End of Content Wrapper -->
     </div>
@@ -254,6 +264,8 @@
                 $('.sidebar').removeClass('show');
                 $('.overlay').remove();
             });
+
+            document.getElementById('footer-year').textContent = new Date().getFullYear();
         });
     </script>
 
