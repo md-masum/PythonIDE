@@ -102,6 +102,7 @@ html, body {
 }
 
 
+/* Scroll to top button */
 .scroll-to-top {
     position: fixed;
     right: 1rem;
@@ -122,6 +123,42 @@ html, body {
     color: white;
     background: #2e59d9;
 }
+/* Scroll to top end */
+
+/* fix z-index issue */
+/* Ensure sidebar and dropdown are above content */
+.sidebar {
+    z-index: 1030;
+    position: relative;
+}
+
+.sidebar .dropdown-menu {
+    z-index: 1040;
+    position: absolute;
+}
+
+/* Topbar should be higher */
+.navbar {
+    position: relative;
+    z-index: 1050;
+}
+
+.navbar .dropdown-menu {
+    z-index: 1060;
+    position: absolute;
+}
+
+/* Scroll to top */
+.scroll-to-top {
+    z-index: 1070;
+}
+
+/* Loader overlay */
+#loader-overlay {
+    z-index: 1080;
+}
+
+/* End of fix z-index issue */
 
 
 
