@@ -18,7 +18,7 @@
     <!-- <link rel="stylesheet" href="bootstrap/bootstrap.min.css"> -->
     <link rel="stylesheet" href="codemirror/codemirror.css">
     <link rel="stylesheet" href="codemirror/theme.css">
-    <link rel="stylesheet" href="xterm/xterm.css" />
+    <!-- <link rel="stylesheet" href="xterm/xterm.css" /> -->
     <link rel="stylesheet" href="style.css">
 
     <script src="pyodide/pyodide.js"></script>
@@ -30,7 +30,14 @@
     
         <!-- Sidebar -->
         <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-            
+            <!-- Only visible on mobile -->
+            <button class="btn btn-link text-white position-absolute d-md-none" 
+                    id="sidebarCloseBtn" 
+                    style="top: 1rem; right: 1rem; z-index: 1050;">
+                <i class="fas fa-times fa-lg"></i>
+            </button>
+
+
             <!-- Sidebar - Brand -->
             <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
                 <div class="sidebar-brand-icon rotate-n-15">
@@ -66,7 +73,7 @@
                 <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
                     <!-- Sidebar Toggle (Topbar) -->
-                    <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+                    <button id="sidebarToggleOpen" class="btn btn-link d-md-none rounded-circle mr-3">
                         <i class="fa fa-bars"></i>
                     </button>
 
@@ -190,19 +197,22 @@
                                     <h6 class="m-0 font-weight-bold text-primary">Terminal</h6>
                                 </div>
                                 <div class="card-body">
-                                    <div id="terminal" class="terminal"></div>
+                                    <pre id="terminal" class="terminal" style="width: 100%; height: 400px; background-color: black; color: limegreen; padding: 10px; overflow-y: auto; font-family: 'Courier New', Courier, monospace;"></pre>
                                 </div>
                             </div>
                         </div>
                     </div>
 
                     <!-- Loader -->
-                    <div id="loader" class="position-fixed top-50 start-50 translate-middle p-3 border rounded shadow-lg" style="display: none; z-index: 1060;">
-                        <div class="d-flex align-items-center">
-                            <strong>Loading Pyodide...</strong>
-                            <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+                    <div id="loader-overlay" class="loader-overlay" style="display: none;">
+                        <div id="loader" class="loader-box">
+                            <div class="d-flex align-items-center">
+                                <!-- <strong>Loading Pyodide...</strong> -->
+                                <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+                            </div>
                         </div>
                     </div>
+
 
                 </div>
                 <!-- /.container-fluid -->
@@ -227,6 +237,25 @@
 
     <!-- Custom scripts for all pages-->
     <script src="js/sb-admin-2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#sidebarToggleOpen').on('click', function () {
+                $('.sidebar').addClass('show');
+                $('body').append('<div class="overlay"></div>');
+            });
+
+            $('#sidebarCloseBtn').on('click', function () {
+                $('.sidebar').removeClass('show');
+                $('.overlay').remove();
+            });
+
+            // Click outside to close
+            $(document).on('click', '.overlay', function () {
+                $('.sidebar').removeClass('show');
+                $('.overlay').remove();
+            });
+        });
+    </script>
 
     <!-- Code editor script-->
     <script src="codemirror/codemirror.js"></script>
@@ -235,8 +264,8 @@
     <script src="script/example-code.js" type="module"></script>
 
     <!-- Xterm.js for terminal emulation -->
-    <script src="xterm/xterm.js"></script>
-    <script src="xterm/xterm-addon-fit.js"></script>
+    <!-- <script src="xterm/xterm.js"></script> -->
+    <!-- <script src="xterm/xterm-addon-fit.js"></script> -->
     <script src="script/terminal.js" type="module" defer></script>
 
     <!-- Custom scripts for this page-->
@@ -264,5 +293,6 @@
             </div>
         </div>
     </div>
+    
 </body>
 </html>

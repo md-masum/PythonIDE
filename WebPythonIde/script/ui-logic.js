@@ -209,7 +209,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             li.addEventListener('click', () => setActiveFile(file.id));
 
             const dropdownDiv = document.createElement('div');
-            dropdownDiv.className = 'dropdown ms-auto';
+            dropdownDiv.className = 'dropdown ms-auto three-dot-menu';
 
             const toggleBtn = document.createElement('button');
             toggleBtn.className = 'btn btn-sm btn-secondary';
