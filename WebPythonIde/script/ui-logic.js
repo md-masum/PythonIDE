@@ -308,6 +308,8 @@ document.addEventListener('DOMContentLoaded', async () => {
             const exampleKey = e.target.dataset.example;
             selectedExample = exampleCode[exampleKey];
             if (selectedExample) {
+                // Explicitly hide the dropdown before showing the modal
+                $(e.target).closest('.dropdown-menu').prev('.dropdown-toggle').dropdown('hide');
                 exampleModalEl.modal('show');
             }
         });

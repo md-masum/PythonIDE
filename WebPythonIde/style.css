@@ -279,6 +279,11 @@ html, body {
         display: inline-block !important;
     }
 
+    .sidebar.toggled .sidebar-brand .sidebar-brand-text {
+        display: none !important;
+    }
+
+
     .sidebar .nav-item .nav-link {
         width: 100% !important;
         text-align: left;
