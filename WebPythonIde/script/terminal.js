@@ -21,7 +21,7 @@ export function clearTerminal() {
 export function setTerminalTheme(isDark) {
     if (terminalElement) {
         if (isDark) {
-            terminalElement.style.backgroundColor = '#343a40';
+            terminalElement.style.backgroundColor = '#000000ff';
             terminalElement.style.color = '#f8f9fa';
         } else {
             terminalElement.style.backgroundColor = '#f8f9fa';
