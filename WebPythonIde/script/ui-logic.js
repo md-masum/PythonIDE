@@ -250,7 +250,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             dropdownDiv.appendChild(dropdownMenu);
 
             // Initialize dropdown for the newly created button
-            $(toggleBtn).dropdown();
+            $(toggleBtn).dropdown({
+                boundary: 'viewport'
+            });
 
             fileLink.appendChild(fileNameSpan);
             li.appendChild(fileLink);

@@ -319,8 +319,13 @@ body.dark-theme {
     background-color: rgba(255, 255, 255, 0.1);
 }
 
-#file-list > .nav-item {
-    display: flex !important;
+#file-list {
+    flex-grow: 1;
+    overflow-y: auto;
+}
+
+#file-list .nav-item {
+    display: flex;
     align-items: center;
     justify-content: space-between;
     padding-right: 10px;
