@@ -1,6 +1,6 @@
 console.log('pyodide-mainThread.js: Script loaded');
 
-const loader = document.getElementById('loader');
+const loaderOverlay = document.getElementById('loader-overlay');
 const runBtn = document.getElementById('run-btn');
 const terminateBtn = document.getElementById('terminate-btn');
 
@@ -9,9 +9,19 @@ import { writeToTerminal, clearTerminal } from './terminal.js';
 let mainThreadPyodideInstance = null;
 let mainThreadExecutionTimeout = null;
 
+function showLoader() {
+    loaderOverlay.style.display = 'flex';
+    document.body.style.overflow = 'hidden'; // prevent scroll during loading
+}
+
+function hideLoader() {
+    loaderOverlay.style.display = 'none';
+    document.body.style.overflow = ''; // restore scroll
+}
+
 export async function initializeMainThreadPyodide() {
     console.log('pyodide-mainThread.js: initializeMainThreadPyodide function triggered');
-    loader.style.display = 'block';
+    showLoader();
     runBtn.disabled = true;
     terminateBtn.style.display = 'none';
 
@@ -30,7 +40,7 @@ export async function initializeMainThreadPyodide() {
         mainThreadPyodideInstance.setStderr({
             write: (text) => {
                 console.error('pyodide-mainThread.js: stderr:', text);
-                writeToTerminal(`\x1b[31m${text}\x1b[0m`); // Red color for errors
+                writeToTerminal(text); // Red color for errors
             },
         });
 
@@ -46,9 +56,10 @@ export async function initializeMainThreadPyodide() {
         console.log('pyodide-mainThread.js: Pyodide initialization complete');
     } catch (error) {
         console.error('pyodide-mainThread.js: Main Thread Pyodide initialization failed:', error);
-        writeToTerminal(`\r\n\x1b[31mFailed to load Pyodide (Main Thread): ${error.message}\x1b[0m`);
+        writeToTerminal(`
+Failed to load Pyodide (Main Thread): ${error.message}`);
     } finally {
-        loader.style.display = 'none';
+        hideLoader();
         runBtn.disabled = false;
     }
 }
@@ -66,7 +77,7 @@ export async function runPythonCodeMainThread(code) {
     mainThreadExecutionTimeout = setTimeout(() => {
         console.log('pyodide-mainThread.js: Execution timed out');
         terminateMainThreadExecution();
-        writeToTerminal('\r\n\r\n\x1b[33mExecution timed out after 30 seconds. Terminated.\x1b[0m');
+        writeToTerminal('\r\n\r\nExecution timed out after 30 seconds. Terminated.');
     }, 30000); // 30 seconds
 
     try {
@@ -98,7 +109,7 @@ output
         let { stdout, stderr } = JSON.parse(result);
 
         if (stderr) {
-            writeToTerminal(`\x1b[31m${stderr}\x1b[0m`); // Red color for errors
+            writeToTerminal(stderr); // Red color for errors
         } else {
             writeToTerminal(stdout);
         }
@@ -108,7 +119,8 @@ output
         console.log('pyodide-mainThread.js: Python code execution complete');
     } catch (err) {
         console.error('pyodide-mainThread.js: Main Thread Python execution failed:', err);
-        writeToTerminal(`\r\n\x1b[31mJavaScript Error: ${err.message}\x1b[0m`);
+        writeToTerminal(`
+JavaScript Error: ${err.message}`);
     } finally {
         console.log('pyodide-mainThread.js: Clearing execution timeout');
         clearTimeout(mainThreadExecutionTimeout);
@@ -124,7 +136,7 @@ export function terminateMainThreadExecution() {
         // Re-initialize Pyodide to effectively terminate execution
         mainThreadPyodideInstance = null; // Clear reference
         initializeMainThreadPyodide(); // Re-initialize
-        writeToTerminal('\r\n\x1b[33mExecution terminated (Main Thread).\x1b[0m\r\n');
+        writeToTerminal('\r\nExecution terminated (Main Thread).\r\n');
         clearTimeout(mainThreadExecutionTimeout);
         runBtn.disabled = false;
         terminateBtn.style.display = 'none';

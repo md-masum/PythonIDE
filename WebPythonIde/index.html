@@ -1,130 +1,292 @@
 
 <!DOCTYPE html>
-<html lang="en" data-bs-theme="dark">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>Offline Python IDE - New UI</title>
-    <link rel="stylesheet" href="bootstrap/bootstrap.min.css">
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+    <link
+        href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i"
+        rel="stylesheet">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin-2.min.css" rel="stylesheet">
+
+    <!-- <link rel="stylesheet" href="bootstrap/bootstrap.min.css"> -->
     <link rel="stylesheet" href="codemirror/codemirror.css">
     <link rel="stylesheet" href="codemirror/theme.css">
-    <link rel="stylesheet" href="style.css"> <!-- Using the main style.css now -->
-    <link rel="stylesheet" href="xterm/xterm.css" />
+    <!-- <link rel="stylesheet" href="xterm/xterm.css" /> -->
+    <link rel="stylesheet" href="style.css">
+
     <script src="pyodide/pyodide.js"></script>
-    
 </head>
-<body>
-    <div class="d-flex flex-column vh-100">
-        <!-- Navbar -->
-        <nav class="navbar navbar-expand-lg bg-body-tertiary flex-shrink-0">
-            <div class="container-fluid">
-                <button class="btn btn-dark d-lg-none" type="button" data-bs-toggle="offcanvas" data-bs-target="#offcanvasPanel" aria-controls="offcanvasPanel" aria-label="Toggle navigation">
-                    &#9776; Files
-                </button>
-                <a class="navbar-brand mx-auto" href="#">Offline Python IDE</a>
+<body id="page-top">
 
-                <ul class="navbar-nav">
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="basic-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Basic
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="basic-dropdown">
-                            <li><a class="dropdown-item" href="#" data-example="variables">Variables & Data Types</a></li>
-                            <li><a class="dropdown-item" href="#" data-example="operators">Operators</a></li>
-                            <li><a class="dropdown-item" href="#" data-example="loops">Loops</a></li>
-                            <li><a class="dropdown-item" href="#" data-example="conditionals">Conditionals</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="intermediate-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Intermediate
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="intermediate-dropdown">
-                            <li><a class="dropdown-item" href="#" data-example="functions">Functions</a></li>
-                            <li><a class="dropdown-item" href="#" data-example="lists">Lists & Tuples</a></li>
-                            <li><a class="dropdown-item" href="#" data-example="dictionaries">Dictionaries</a></li>
-                            <li><a class="dropdown-item" href="#" data-example="files">File Handling (Simulated)</a></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="advanced-dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                            Advanced
-                        </a>
-                        <ul class="dropdown-menu" aria-labelledby="advanced-dropdown">
-                            <li><a class="dropdown-item" href="#" data-example="classes">Classes & Objects</a></li>
-                            <li><a class="dropdown-item" href="#" data-example="exceptions">Exception Handling</a></li>
-                            <li><a class="dropdown-item" href="#" data-example="imports">Modules & Imports</a></li>
-                        </ul>
-                    </li>
-                </ul>
-                <div class="form-check form-switch">
-                    <input class="form-check-input" type="checkbox" role="switch" id="theme-switcher">
-                    <label class="form-check-label" for="theme-switcher">Dark Mode</label>
-                </div>
-            </div>
-        </nav>
-
-        <!-- Main Content Area (Sidebar + Editor/Output) -->
-        <div class="d-flex flex-grow-1 overflow-hidden">
-
-            <!-- Left Sidebar (Offcanvas for mobile, static for desktop) -->
-            <div class="offcanvas d-lg-block offcanvas-start d-flex flex-column flex-shrink-0 p-3 overflow-y-auto" tabindex="-1" id="offcanvasPanel" aria-labelledby="offcanvasPanelLabel">
+     <!-- Page Wrapper -->
+    <div id="wrapper">
     
-                <div class="offcanvas-header d-lg-none"> <!-- Hide close button on desktop -->
-                    <h5 class="offcanvas-title" id="offcanvasPanelLabel">Files</h5>
-                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                <div class="d-flex justify-content-between align-items-center mb-3"> <!-- Show header on desktop -->
-                    <h5 class="mb-0">Files</h5>
-                    <button class="btn btn-success btn-sm" id="new-file-btn" title="New File">Add New</button>
-                </div>
-                <div class="offcanvas-body p-0 d-lg-block"> <!-- Show body on desktop -->
-                    <ul class="list-group" id="file-list"></ul>
-                </div>
+        <!-- Sidebar -->
+        <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+            <!-- Only visible on mobile -->
+            <button class="btn btn-link text-white position-absolute d-md-none" 
+                    id="sidebarCloseBtn" 
+                    style="top: 1rem; right: 1rem; z-index: 1050;">
+                <i class="fas fa-times fa-lg"></i>
+            </button>
 
+
+            <!-- Sidebar - Brand -->
+            <a class="sidebar-brand d-flex align-items-center justify-content-center" href="#">
+                <div class="sidebar-brand-icon rotate-n-15">
+                    <i class="fas fas fa-code"></i>
+                </div>
+                <div class="sidebar-brand-text mx-3">Python IDE</div>
+            </a>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider my-0">
+
+            <!-- Nav Item - Dashboard -->
+            <li class="nav-item active">
+                <a class="nav-link" id="new-file-btn">
+                    <i class="fas fa-plus fa-fw fa-lg"></i>
+                    <span class="text-end">Create New File</span></a>
+            </li>
+
+            <!-- Divider -->
+            <hr class="sidebar-divider">
+
+            <div id="file-list"></div>
+
+            <hr class="sidebar-divider">
+            <!-- Sidebar Toggler (Sidebar) -->
+            <div class="text-center d-none d-md-inline">
+                <button class="rounded-circle border-0" id="sidebarToggle"></button>
             </div>
+        </ul>
+        <!-- End of Sidebar -->
 
-            <!-- Editor and Output Section -->
-            <main class="flex-grow-1 d-flex flex-column flex-md-row p-2 gap-2">
+        <!-- Content Wrapper -->
+        <div id="content-wrapper" class="d-flex flex-column">
+        
+            <!-- Main Content -->
+            <div id="content">
+            
+                <!-- Topbar -->
+                <nav class="navbar navbar-expand navbar-light bg-white topbar mb-4 static-top shadow">
 
-                <!-- Editor Column -->
-                <div class="d-flex flex-column editor-col w-100 w-md-50">
-                    <div class="d-flex align-items-center pb-2 flex-shrink-0 flex-wrap">
-                            <h5 id="editor-filename" class="mb-0 me-auto text-truncate"></h5>
-                            <div class="btn-group btn-group-sm" role="group">
-                                <button id="run-btn" class="btn btn-primary">Run</button>
-                                <button id="terminate-btn" class="btn btn-warning" style="display: none;">Terminate</button>
-                                <button id="clear-btn" class="btn btn-secondary">Clear Output</button>
+                    <!-- Sidebar Toggle (Topbar) -->
+                    <button id="sidebarToggleOpen" class="btn btn-link d-md-none rounded-circle mr-3">
+                        <i class="fa fa-bars"></i>
+                    </button>
+
+                    <!-- Topbar Navbar -->
+                    <ul class="navbar-nav ml-auto">
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="basic-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="text-gray-600">Basic</span>
+                            </a>
+                            <!-- Dropdown - Basic -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="basic-dropdown">
+                                <h6 class="dropdown-header">
+                                    Python basic code examples
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="variables">
+                                    <div class="text-truncate">Variables & Data Types</div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="operators">
+                                    <div class="text-truncate">Operators</div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="loops">
+                                    <div class="text-truncate">Loops</div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="conditionals">
+                                    <div class="text-truncate">Conditionals</div>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="intermediate-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="text-gray-600">Intermediate</span>
+                            </a>
+                            <!-- Dropdown - Intermediate -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="intermediate-dropdown">
+                                <h6 class="dropdown-header">
+                                    Python intermediate code examples
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="functions">
+                                    <div class="text-truncate">Functions</div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="lists">
+                                    <div class="text-truncate">Lists & Tuples</div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="dictionaries">
+                                    <div class="text-truncate">Dictionaries</div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="files">
+                                    <div class="text-truncate">File Handling (Simulated)</div>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="nav-item dropdown no-arrow mx-1">
+                            <a class="nav-link dropdown-toggle" href="#" id="advanced-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                <span class="text-gray-600">Advanced</span>
+                            </a>
+                            <!-- Dropdown - Advanced -->
+                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="advanced-dropdown">
+                                <h6 class="dropdown-header">
+                                    Python advanced code examples
+                                </h6>
+                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="classes">
+                                    <div class="text-truncate">Classes & Objects</div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="exceptions">
+                                    <div class="text-truncate">Exception Handling</div>
+                                </a>
+                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="imports">
+                                    <div class="text-truncate">Modules & Imports</div>
+                                </a>
+                            </div>
+                        </li>
+                        <li class="nav-item">
+                            <div class="form-check nav-link form-switch">
+                                <input class="form-check-input" type="checkbox" role="switch" id="theme-switcher" style="display: none;">
+                                <label class="form-check-label" for="theme-switcher">
+                                    <i id="theme-icon" class="fas fa-sun fa-lg"></i>
+                                </label>
+                            </div>
+                        </li>
+
+                    </ul>
+                </nav>
+                <!-- End of Topbar -->
+
+                <!-- Begin Page Content -->
+                <div class="container-fluid">
+                
+                    <!-- Content Row -->
+                    <div class="row">
+
+                        <!-- Content Column -->
+                        <div class="col-lg-6 mb-4">
+                            <!-- Code editor -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3 d-flex flex-row align-items-center justify-content-between">
+                                    <h6 class="m-0 font-weight-bold text-primary" id="editor-filename"></h6>
+                                    <div class="d-flex gap-2">
+                                        <button id="run-btn" class="btn btn-sm btn-primary mr-2">
+                                            <i class="fas fa-play"></i>
+                                        </button>
+                                        <button id="terminate-btn" class="btn btn-sm btn-secondary mr-2" style="display: none;">
+                                            <i class="fas fa-stop"></i>
+                                        </button>
+                                        <button id="clear-btn" class="btn btn-sm btn-danger">
+                                            <i class="fas fa-eraser"></i>
+                                        </button>
+                                    </div>
+
+                                </div>
+                                
+                                <div class="card-body">
+                                    <div id="editor"></div>
+                                </div>
                             </div>
                         </div>
-                    <div id="editor" class="flex-grow-1"></div>
-                </div>
+                        <!-- Content Column -->
+                        <div class="col-lg-6 mb-4">
+                            <!-- Terminal -->
+                            <div class="card shadow mb-4">
+                                <div class="card-header py-3">
+                                    <h6 class="m-0 font-weight-bold text-primary">Terminal</h6>
+                                </div>
+                                <div class="card-body">
+                                    <pre id="terminal" class="terminal" style="width: 100%; background-color: black; color: limegreen; padding: 10px; overflow-y: auto; font-family: 'Courier New', Courier, monospace;"></pre>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                <!-- Output Column -->
-                <div class="d-flex flex-column output-col w-100 w-md-50">
-                    <h5 class="pb-2 mb-0 flex-shrink-0">Output</h5>
-                    <div id="terminal" class="flex-grow-1 p-2 rounded"></div>
-                </div>
+                    <!-- Loader -->
+                    <div id="loader-overlay" class="loader-overlay" style="display: none;">
+                        <div id="loader" class="loader-box">
+                            <div class="d-flex align-items-center">
+                                <!-- <strong>Loading Pyodide...</strong> -->
+                                <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
+                            </div>
+                        </div>
+                    </div>
 
-            </main>
+
+                </div>
+                <!-- /.container-fluid -->
+
+            </div>
+            <!-- End of Main Content -->
+
+             <!-- Footer -->
+            <footer class="sticky-footer bg-white">
+                <div class="container my-auto">
+                    <div class="copyright text-center my-auto">
+                        <span>Copyright &copy; <span id="footer-year"></span> Offline Python IDE</span>
+                    </div>
+                </div>
+            </footer>
+            <!-- End of Footer -->
         </div>
+        <!-- End of Content Wrapper -->
     </div>
 
-    <!-- Loader -->
-    <div id="loader" class="position-fixed top-50 start-50 translate-middle p-3 bg-dark border rounded shadow-lg" style="display: none; z-index: 1060;">
-        <div class="d-flex align-items-center">
-            <strong>Loading Pyodide...</strong>
-            <div class="spinner-border ms-auto" role="status" aria-hidden="true"></div>
-        </div>
-    </div>
+    <!-- Scroll to Top Button-->
+    <a class="scroll-to-top rounded" href="#page-top">
+        <i class="fas fa-angle-up"></i>
+    </a>
 
-    <script src="bootstrap/bootstrap.bundle.min.js"></script>
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+    <!-- Custom scripts for all pages-->
+    <script src="js/sb-admin-2.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#sidebarToggleOpen').on('click', function () {
+                $('.sidebar').addClass('show');
+                $('body').append('<div class="overlay"></div>');
+            });
+
+            $('#sidebarCloseBtn').on('click', function () {
+                $('.sidebar').removeClass('show');
+                $('.overlay').remove();
+            });
+
+            // Click outside to close
+            $(document).on('click', '.overlay', function () {
+                $('.sidebar').removeClass('show');
+                $('.overlay').remove();
+            });
+
+            document.getElementById('footer-year').textContent = new Date().getFullYear();
+        });
+    </script>
+
+    <!-- Code editor script-->
     <script src="codemirror/codemirror.js"></script>
     <script src="codemirror/python.js"></script>
-    <script src="xterm/xterm.js"></script>
-    <script src="xterm/xterm-addon-fit.js"></script>
+
     <script src="script/example-code.js" type="module"></script>
+
+    <!-- Xterm.js for terminal emulation -->
+    <!-- <script src="xterm/xterm.js"></script> -->
+    <!-- <script src="xterm/xterm-addon-fit.js"></script> -->
     <script src="script/terminal.js" type="module" defer></script>
+
+    <!-- Custom scripts for this page-->
     <script src="script/pyodide-mainThread.js" type="module" defer></script>
     <script src="script/pyodide-logic.js" type="module" defer></script>
     <script src="script/ui-logic.js" type="module" defer></script>
@@ -135,7 +297,9 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">Load Example Code</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
                 </div>
                 <div class="modal-body">
                     How would you like to load this example?
@@ -147,5 +311,6 @@
             </div>
         </div>
     </div>
+    
 </body>
 </html>

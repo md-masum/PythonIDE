@@ -18,13 +18,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     const formatBtn = document.getElementById('format-btn');
 
     const themeSwitcher = document.getElementById('theme-switcher');
-    const exampleModal = new bootstrap.Modal(document.getElementById('example-modal'));
+    const exampleModalEl = $('#example-modal');
+
     let selectedExample = null;
 
     // --- Theme Functions ---
     const applyTheme = (isDark) => {
         console.log(`ui-logic.js: applyTheme called with isDark: ${isDark}`);
-        document.documentElement.setAttribute('data-bs-theme', isDark ? 'dark' : 'light');
+        document.body.classList.toggle('dark-theme', isDark);
         editor.setOption('theme', isDark ? 'material-darker' : 'default');
         setTerminalTheme(isDark);
         themeSwitcher.checked = isDark;
@@ -192,11 +193,15 @@ document.addEventListener('DOMContentLoaded', async () => {
         fileList.innerHTML = '';
         files.forEach(file => {
             const li = document.createElement('li');
-            li.className = 'list-group-item list-group-item-action d-flex justify-content-between align-items-center';
+            li.className = 'nav-item';
             li.dataset.id = file.id;
             if (file.id === activeFileId) {
                 li.classList.add('active');
             }
+
+            const fileLink = document.createElement('a');
+            fileLink.className = 'nav-link';
+            fileLink.href = '#';
 
             const fileNameSpan = document.createElement('span');
             fileNameSpan.className = 'file-name';
@@ -204,11 +209,11 @@ document.addEventListener('DOMContentLoaded', async () => {
             li.addEventListener('click', () => setActiveFile(file.id));
 
             const dropdownDiv = document.createElement('div');
-            dropdownDiv.className = 'dropdown ms-auto';
+            dropdownDiv.className = 'dropdown ms-auto three-dot-menu';
 
             const toggleBtn = document.createElement('button');
             toggleBtn.className = 'btn btn-sm btn-secondary';
-            toggleBtn.setAttribute('data-bs-toggle', 'dropdown');
+            toggleBtn.setAttribute('data-toggle', 'dropdown');
             toggleBtn.setAttribute('aria-expanded', 'false');
             toggleBtn.innerHTML = '&#x22EE;'; // 
 
@@ -247,15 +252,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             dropdownDiv.appendChild(toggleBtn);
             dropdownDiv.appendChild(dropdownMenu);
 
-            li.appendChild(fileNameSpan);
+            // Initialize dropdown for the newly created button
+            $(toggleBtn).dropdown();
+
+            fileLink.appendChild(fileNameSpan);
+            li.appendChild(fileLink);
+
             li.appendChild(dropdownDiv);
             fileList.appendChild(li);
-        });
-
-        // Initialize dropdowns
-        const dropdownElementList = [].slice.call(document.querySelectorAll('.dropdown-toggle'));
-        dropdownElementList.map(function (dropdownToggleEl) {
-            return new bootstrap.Dropdown(dropdownToggleEl);
         });
     };
 
@@ -304,7 +308,9 @@ document.addEventListener('DOMContentLoaded', async () => {
             const exampleKey = e.target.dataset.example;
             selectedExample = exampleCode[exampleKey];
             if (selectedExample) {
-                exampleModal.show();
+                // Explicitly hide the dropdown before showing the modal
+                $(e.target).closest('.dropdown-menu').prev('.dropdown-toggle').dropdown('hide');
+                exampleModalEl.modal('show');
             }
         });
     });
@@ -313,7 +319,7 @@ document.addEventListener('DOMContentLoaded', async () => {
         if (selectedExample) {
             editor.setValue(selectedExample.code);
             saveActiveFileContent();
-            exampleModal.hide();
+            exampleModalEl.modal('hide');
         }
     });
 
@@ -334,7 +340,7 @@ document.addEventListener('DOMContentLoaded', async () => {
                 renderFileList();
                 loadActiveFile();
             }
-            exampleModal.hide();
+            exampleModalEl.modal('hide');
         }
     });
 

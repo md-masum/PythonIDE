@@ -1,50 +1,31 @@
 console.log('terminal.js: Script loaded');
 
-export const term = new Terminal({
-    convertEol: true,
-    cursorBlink: true,
-    wordWrap: false, // Disable word wrapping
-    theme: {
-        background: '#343a40', // A slightly lighter dark gray
-        foreground: '#f8f9fa', // Light gray for text
-        cursor: 'rgba(255, 255, 255, .5)',
-        selection: 'rgba(255, 255, 255, 0.3)'
-    }
-});
-const fitAddon = new FitAddon.FitAddon();
-term.loadAddon(fitAddon);
+let terminalElement;
 
 export function initializeTerminal(elementId) {
-    const terminalElement = document.getElementById(elementId);
-    if (terminalElement) {
-        term.open(terminalElement);
-        fitAddon.fit();
-        window.addEventListener('resize', () => fitAddon.fit());
-    }
+    terminalElement = document.getElementById(elementId);
 }
 
 export function writeToTerminal(data) {
-    term.write(data);
+    if (terminalElement) {
+        terminalElement.textContent += data;
+    }
 }
 
 export function clearTerminal() {
-    term.clear();
+    if (terminalElement) {
+        terminalElement.textContent = '';
+    }
 }
 
 export function setTerminalTheme(isDark) {
-    term.options.theme = isDark 
-        ? {
-            background: '#343a40',
-            foreground: '#f8f9fa',
-            cursor: 'rgba(255, 255, 255, .5)',
-            selection: 'rgba(255, 255, 255, 0.3)'
+    if (terminalElement) {
+        if (isDark) {
+            terminalElement.style.backgroundColor = '#000000ff';
+            terminalElement.style.color = '#f8f9fa';
+        } else {
+            terminalElement.style.backgroundColor = '#f8f9fa';
+            terminalElement.style.color = '#212529';
         }
-        : {
-            background: '#f8f9fa',
-            foreground: '#212529',
-            cursor: 'rgba(0, 0, 0, .5)',
-            selection: 'rgba(0, 0, 0, 0.3)'
-        };
-
-    term.refresh(0, term.rows - 1); // ✅ Correct usage
+    }
 }
