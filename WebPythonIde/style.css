@@ -14,6 +14,7 @@ html, body {
     height: 100vh;
     position: sticky;
     top: 0;
+    z-index: 1030;
 }
 
 #content-wrapper {
@@ -28,6 +29,7 @@ html, body {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
+    min-height: 0;
     overflow: hidden;
 }
 
@@ -35,7 +37,8 @@ html, body {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
-    overflow: auto;
+    min-height: 0;
+    overflow: hidden;
 }
 
 @media (min-width: 768px) {
@@ -44,38 +47,55 @@ html, body {
         display: flex;
         flex-wrap: nowrap;
         gap: 1rem;
+        min-height: 0;
     }
 
     .container-fluid > .row > .col-lg-6 {
         flex: 1 1 0;
-        width: 50%;
         display: flex;
         flex-direction: column;
         min-width: 0;
+        min-height: 0;
     }
 }
 
 .card {
-    flex-grow: 1;
+    flex: 1 1 0;
     display: flex;
     flex-direction: column;
+    min-height: 0;
 }
 
 .card-body {
-    flex: 1 1 auto;
+    flex: 1 1 0;
     display: flex;
     flex-direction: column;
+    min-height: 0;
+    overflow: hidden;
 }
 
 #editor {
     flex: 1 1 auto;
     display: flex;
     flex-direction: column;
+    min-height: 0;
 }
 
 .CodeMirror {
     flex: 1 1 auto !important;
     width: 100%;
+    min-height: 0;
+}
+
+#terminal {
+    flex: 1 1 auto;
+    width: 100%;
+    overflow-y: auto;
+    min-height: 0;
+    background-color: black;
+    color: limegreen;
+    padding: 10px;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 /* Footer */
@@ -101,7 +121,6 @@ html, body {
     }
 }
 
-
 /* Scroll to top button */
 .scroll-to-top {
     position: fixed;
@@ -123,190 +142,16 @@ html, body {
     color: white;
     background: #2e59d9;
 }
-/* Scroll to top end */
-
-/* fix z-index issue */
-/* Ensure sidebar and dropdown are above content */
-.sidebar {
-    z-index: 1030;
-    position: relative;
-}
-
-.sidebar .dropdown-menu {
-    z-index: 1040;
-    position: absolute;
-}
-
-/* Topbar should be higher */
-.navbar {
-    position: relative;
-    z-index: 1050;
-}
-
-.navbar .dropdown-menu {
-    z-index: 1060;
-    position: absolute;
-}
-
-/* Scroll to top */
-.scroll-to-top {
-    z-index: 1070;
-}
 
 /* Loader overlay */
 #loader-overlay {
-    z-index: 1080;
-}
-
-/* End of fix z-index issue */
-
-/* mobile topbar */
-.topbar, .navbar {
-    padding-top: env(safe-area-inset-top);
-    padding-left: env(safe-area-inset-left);
-    padding-right: env(safe-area-inset-right);
-    width: 100%;
-    max-width: 100vw;
-    box-sizing: border-box;
-}
-
-@media (max-width: 768px) {
-    html {
-        box-sizing: border-box;
-    }
-
-    *, *::before, *::after {
-        box-sizing: inherit;
-    }
-
-    body {
-        margin: 0;
-        padding: 0;
-        width: 100vw;
-        min-height: 100vh;
-        overflow-x: hidden;
-    }
-
-}
-@media (max-width: 375px) {
-    .topbar {
-        height: 3.5rem; 
-    }
-
-    .topbar .nav-link {
-        font-size: 0.875rem;
-    }
-}
-/*End of mobile topbar*/
-
-
-
-
-/* Style for the file list in the navigation bar */
-#file-list .nav-item {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    padding-right: 10px;
-}
-
-#file-list .nav-item .nav-link {
-    flex: 1;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-#file-list .nav-item .file-name {
-    display: inline-block;
-    max-width: 150px; /* ✅ Limit width */
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-}
-
-#new-file-btn {
-    cursor: pointer;
-}
-
-.three-dot-menu .btn-secondary{
-    color: #fff;
-    background-color: transparent !important;
-    border: none !important;
-    box-shadow: none !important;
-}
-
-.three-dot-menu .btn-secondary:hover {
-    background-color: rgba(255, 255, 255, 0.1);
-}
-
-/* Sidebar mobile header style adjustment */
-.sidebar .sidebar-brand .sidebar-brand-text {
-    display: inline-block !important;
-}
-/* Sidebar mobile header style adjustment end */
-
-/* Sidebar styles */
-/* Sidebar full screen on small devices */
-@media (max-width: 768px) {
-    .sidebar {
-        position: fixed;
-        top: 0;
-        left: -100%; /* hidden by default */
-        width: 100%;
-        height: 100vh;
-        z-index: 1080; /* above content but below modals */
-        background-color: #343a40; /* or your desired color */
-        transition: all 0.3s ease-in-out;
-    }
-
-    .sidebar.show {
-        left: 0;
-    }
-
-    /* Optional: Darken the main content behind sidebar when open */
-    .overlay {
-        position: fixed;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 100%;
-        background-color: rgba(0,0,0,0.5);
-        z-index: 1070;
-    }
-
-    .sidebar .sidebar-brand .sidebar-brand-text {
-        display: inline-block !important;
-    }
-
-    .sidebar.toggled .sidebar-brand .sidebar-brand-text {
-        display: none !important;
-    }
-
-
-    .sidebar .nav-item .nav-link {
-        width: 100% !important;
-        text-align: left;
-        padding-left: 1.5rem;
-    }
-
-    .sidebar .nav-item .nav-link span {
-        font-size: .65rem;
-        display: inline;
-    }
-}
-/* Sidebar End */
-
-/* Loader styles */
-.loader-overlay {
     position: fixed;
-    inset: 0; /* shorthand for top: 0; left: 0; bottom: 0; right: 0 */
+    inset: 0;
     background-color: rgba(0, 0, 0, 0.5);
-    z-index: 3000; /* Ensure it's above everything */
+    z-index: 3000;
     display: flex;
     justify-content: center;
     align-items: center;
-    pointer-events: all; /* block all clicks */
 }
 
 .loader-box {
@@ -326,7 +171,162 @@ body.dark-theme {
     --loader-bg-color: #343a40;
     --loader-text-color: #fff;
 }
-/*loader styles end */
+
+/* Sidebar Mobile Styles */
+@media (max-width: 767.98px) {
+    html, body, #wrapper, #content-wrapper, #content, .container-fluid {
+        height: auto !important;
+        overflow: visible !important;
+        /* display: block !important; */
+    }
+
+    /* Body Styles */
+    .container-fluid {
+        padding-left: 0px !important;
+        padding-right: 0px !important;
+    }
+    /* End Body Styles */
+
+    .row {
+        display: block !important;
+    }
+
+    .col-lg-6 {
+        width: 100% !important;
+        display: block !important;
+    }
+
+    .card {
+        display: block;
+        width: 100%;
+        margin-bottom: 1rem;
+    }
+
+    .card-body {
+        padding-left: .25px !important;
+        padding-right: .25px !important;
+    }
+
+    #editor {
+        height: 350px;
+    }
+
+    .terminal {
+        height: 350px;
+    }
+}
+
+
+@media (max-width: 768px) {
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100vh;
+        z-index: 1080;
+        background-color: #343a40;
+        transition: all 0.3s ease-in-out;
+    }
+
+    .sidebar.show {
+        left: 0;
+    }
+
+    .overlay {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: rgba(0,0,0,0.5);
+        z-index: 1070;
+    }
+
+    .sidebar .nav-item .nav-link {
+        width: 100% !important;
+        text-align: left;
+        padding-left: 1.5rem;
+        padding-right: 1.5rem;
+    }
+
+    .sidebar .nav-item .nav-link span {
+        font-size: .65rem;
+    }
+
+    #file-list > .nav-item {
+    padding-right: 20px !important;
+}
+
+    .sidebar .sidebar-brand .sidebar-brand-text {
+        display: inline-block !important;
+    }
+    .sidebar .nav-item .nav-link span {
+        display: inline;
+    }
+}
+
+/* Z-Index Management */
+.sidebar .dropdown-menu {
+    z-index: 1040;
+    position: absolute;
+}
+
+.navbar {
+    position: relative;
+    z-index: 1050;
+}
+
+.navbar .dropdown-menu {
+    z-index: 1060;
+    position: absolute;
+}
+
+.scroll-to-top {
+    z-index: 1070;
+}
+
+/* Topbar Mobile Safe Area */
+.topbar, .navbar {
+    padding-top: env(safe-area-inset-top);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
+    width: 100%;
+    max-width: 100vw;
+    box-sizing: border-box;
+}
+
+@media (max-width: 375px) {
+    .topbar {
+        height: 3.5rem;
+    }
+
+    .topbar .nav-link {
+        font-size: 0.875rem;
+    }
+}
+
+/* Sidebar Styles */
+
+.three-dot-menu .btn-secondary{
+    color: #fff;
+    background-color: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+}
+
+.three-dot-menu .btn-secondary:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+#file-list > .nav-item {
+    display: flex !important;
+    align-items: center;
+    justify-content: space-between;
+    padding-right: 10px;
+}
+
+/* End Sidebar Styles */
 
 
 /* Dark theme styles */
