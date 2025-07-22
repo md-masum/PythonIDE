@@ -18,7 +18,7 @@
     <!-- <link rel="stylesheet" href="bootstrap/bootstrap.min.css"> -->
     <link rel="stylesheet" href="codemirror/codemirror.css">
     <link rel="stylesheet" href="codemirror/theme.css">
-    <!-- <link rel="stylesheet" href="xterm/xterm.css" /> -->
+    <link rel="stylesheet" href="css/modal.css">
     <link rel="stylesheet" href="style.css">
 
     <script src="pyodide/pyodide.js"></script>
@@ -85,72 +85,7 @@
 
                     <!-- Topbar Navbar -->
                     <ul class="navbar-nav ml-auto">
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="basic-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="text-gray-600">Basic</span>
-                            </a>
-                            <!-- Dropdown - Basic -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="basic-dropdown">
-                                <h6 class="dropdown-header">
-                                    Python basic code examples
-                                </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="variables">
-                                    <div class="text-truncate">Variables & Data Types</div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="operators">
-                                    <div class="text-truncate">Operators</div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="loops">
-                                    <div class="text-truncate">Loops</div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="conditionals">
-                                    <div class="text-truncate">Conditionals</div>
-                                </a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="intermediate-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="text-gray-600">Intermediate</span>
-                            </a>
-                            <!-- Dropdown - Intermediate -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="intermediate-dropdown">
-                                <h6 class="dropdown-header">
-                                    Python intermediate code examples
-                                </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="functions">
-                                    <div class="text-truncate">Functions</div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="lists">
-                                    <div class="text-truncate">Lists & Tuples</div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="dictionaries">
-                                    <div class="text-truncate">Dictionaries</div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="files">
-                                    <div class="text-truncate">File Handling (Simulated)</div>
-                                </a>
-                            </div>
-                        </li>
-                        <li class="nav-item dropdown no-arrow mx-1">
-                            <a class="nav-link dropdown-toggle" href="#" id="advanced-dropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <span class="text-gray-600">Advanced</span>
-                            </a>
-                            <!-- Dropdown - Advanced -->
-                            <div class="dropdown-list dropdown-menu dropdown-menu-right shadow animated--grow-in" aria-labelledby="advanced-dropdown">
-                                <h6 class="dropdown-header">
-                                    Python advanced code examples
-                                </h6>
-                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="classes">
-                                    <div class="text-truncate">Classes & Objects</div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="exceptions">
-                                    <div class="text-truncate">Exception Handling</div>
-                                </a>
-                                <a class="dropdown-item d-flex align-items-center" href="#" data-example="imports">
-                                    <div class="text-truncate">Modules & Imports</div>
-                                </a>
-                            </div>
-                        </li>
+                        
                         <li class="nav-item">
                             <div class="form-check nav-link form-switch">
                                 <input class="form-check-input" type="checkbox" role="switch" id="theme-switcher" style="display: none;">
@@ -289,6 +224,7 @@
     <!-- Custom scripts for this page-->
     <script src="script/pyodide-mainThread.js" type="module" defer></script>
     <script src="script/pyodide-logic.js" type="module" defer></script>
+    <script src="script/training.js" type="module" defer></script>
     <script src="script/ui-logic.js" type="module" defer></script>
 
     <!-- Modal for Example Code -->

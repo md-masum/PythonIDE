@@ -3,7 +3,7 @@ console.log('ui-logic.js: Script loaded');
 import { initializeWorkerPyodide, runPythonCode, terminatePythonExecution } from './pyodide-logic.js';
 import { initializeMainThreadPyodide } from './pyodide-mainThread.js';
 import { initializeTerminal, clearTerminal, setTerminalTheme, writeToTerminal } from './terminal.js';
-import { exampleCode } from './example-code.js';
+import { initializeTraining } from './training.js';
 
 document.addEventListener('DOMContentLoaded', async () => {
     console.log('ui-logic.js: DOMContentLoaded event fired');
@@ -18,9 +18,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     const formatBtn = document.getElementById('format-btn');
 
     const themeSwitcher = document.getElementById('theme-switcher');
-    const exampleModalEl = $('#example-modal');
-
-    let selectedExample = null;
 
     // --- Theme Functions ---
     const applyTheme = (isDark) => {
@@ -301,48 +298,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     initializeTerminal('terminal'); // Initialize terminal first
     loadTheme(); // Then load the theme
 
-    // --- Event Listeners for Examples ---
-    document.querySelectorAll('.dropdown-item[data-example]').forEach(item => {
-        item.addEventListener('click', (e) => {
-            e.preventDefault();
-            const exampleKey = e.target.dataset.example;
-            selectedExample = exampleCode[exampleKey];
-            if (selectedExample) {
-                // Explicitly hide the dropdown before showing the modal
-                $(e.target).closest('.dropdown-menu').prev('.dropdown-toggle').dropdown('hide');
-                exampleModalEl.modal('show');
-            }
-        });
-    });
-
-    document.getElementById('load-in-current-file-btn').addEventListener('click', () => {
-        if (selectedExample) {
-            editor.setValue(selectedExample.code);
-            saveActiveFileContent();
-            exampleModalEl.modal('hide');
-        }
-    });
-
-    document.getElementById('create-new-file-from-example-btn').addEventListener('click', () => {
-        if (selectedExample) {
-            let existingFile = files.find(f => f.name === selectedExample.name);
-            if (existingFile) {
-                setActiveFile(existingFile.id);
-            } else {
-                const newFile = {
-                    id: Date.now().toString(),
-                    name: selectedExample.name,
-                    content: selectedExample.code
-                };
-                files.unshift(newFile);
-                activeFileId = newFile.id;
-                saveFiles();
-                renderFileList();
-                loadActiveFile();
-            }
-            exampleModalEl.modal('hide');
-        }
-    });
+    initializeTraining(editor, files, activeFileId, saveFiles, renderFileList, loadActiveFile, setActiveFile, createNewFile, saveActiveFileContent);
 
     writeToTerminal('Loading Pyodide\n');
     await initializeMainThreadPyodide();
