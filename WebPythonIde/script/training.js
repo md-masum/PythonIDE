@@ -96,10 +96,8 @@ export function initializeTraining(editor, files, activeFileId, saveFiles, rende
                     content: selectedExample.code
                 };
                 files.unshift(newFile);
-                activeFileId = newFile.id;
-                saveFiles();
-                renderFileList();
-                loadActiveFile();
+                saveFiles(); // Save the updated file list
+                setActiveFile(newFile.id); // Use the function to properly switch files
             }
             exampleModalEl.modal('hide');
         }
