@@ -1,1 +1,15 @@
 .DS_Store
+
+# IDE and build output
+[Bb]in/
+[Oo]bj/
+
+# Copied content
+BlazorHybridPythonCompiler/wwwroot/ 
+
+# Visual Studio temporary files
+.vs/
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
