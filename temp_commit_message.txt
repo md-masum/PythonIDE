@@ -1,7 +1,0 @@
-feat: Configure project for Blazor Hybrid development
-
-- Added solution file for Visual Studio.
-- Created a Python script to automate wwwroot content updates.
-- Updated .gitignore to exclude build artifacts, copied content, and Visual Studio temporary files.
-- Streamlined project to target only iOS and Android platforms.
-- Removed unnecessary platform folders (MacCatalyst, Tizen, Windows).
